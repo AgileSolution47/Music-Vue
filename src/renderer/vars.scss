@@ -1,0 +1,13 @@
+$bg: #141414;
+$primary: #323232;
+$secondary: #1d1d1d;
+
+$accent: rgb(23, 99, 212);
+$btncol: rgb(18, 91, 193);
+
+@mixin flex-box($justify: center, $align: center, $direction: row) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200,300,400&display=swap" />
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      color: white;
+      font-family: Raleway;
+    }
+
+    a {
+      color: rgb(94, 152, 238);
+      text-decoration: none;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      background: rgb(27, 27, 27);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .side-bar {
+      margin: 1.5rem 0;
+      padding: 0.5rem 1rem;
+      flex: 3;
+      border-right: 1px solid #69696969;
+      height: calc(100vh - 2rem);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-direction: column;
+      max-width: 320px;
+    }
+
+    h1 {
+      width: 60%;
+      margin-bottom: 0.5rem;
+    }
+
+    .links {
+      width: 85%;
+      list-style-type: none;
+    }
+
+    .links li {
+      font-size: 1.2rem;
+      margin: 0.3rem 0;
+    }
+
+    .content {
+      flex: 7;
+      height: 100%;
+      overflow: auto;
+      padding: 1.5rem;
+      scroll-behavior: smooth;
+    }
+
+    .content > div {
+      margin-bottom: 1.5rem;
+    }
+    .content::-webkit-scrollbar {
+      width: 0.7rem;
+      position: fixed;
+    }
+    .content::-webkit-scrollbar-track {
+      background-color: rgb(27, 27, 27);
+    }
+    .content::-webkit-scrollbar-thumb {
+      background-color: rgb(75, 74, 74);
+    }
+
+    p {
+      line-height: 1.6rem;
+    }
+
+    code {
+      background-color: rgb(53, 56, 71);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
+      font-family: monospace;
+    }
+
+    .inline-code {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: rgb(179, 118, 22);
+      border: 1px solid rgb(179, 118, 22);
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin: 0 4px;
+    }
+
+    .note {
+      width: 100%;
+      border-left: 6px solid rgb(5, 63, 149);
+      padding: 0 1rem;
+      margin: 3px 0;
+    }
+
+    .flex {
+      display: flex;
+      align-items: center;
+      margin: 0.7rem;
+    }
+
+    .shortcut {
+      margin-right: 2rem;
+      width: 150px;
+    }
+
+    h4 {
+      margin-top: 0.8rem;
+    }
+
+    img {
+      position: relative;
+      left: 50%;
+      transform: translateX(calc(-50% - 20px));
+      max-width: 100%;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Help Page</title>
+  </head>
+  <body>
+    <div class="side-bar">
+      <h1>Contents</h1>
+      <ul class="links">
+        <!-- <li><a href="#About">About</a></li> -->
+        <li><a href="#Updates">Updates</a></li>
+        <li><a href="#Player">Player</a></li>
+        <li><a href="#Shortcuts">Shortcuts</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <!-- <div id="About">
+        <h1>About</h1>
+        <p>This is a Music player</p>
+      </div> -->
+      <div id="Updates">
+        <h1>Updates</h1>
+        <p>
+          When a new update is released to <a href="https://github.com/Lutetium-Vanadium/Music">GitHub</a>, you will be notified on next
+          time you open the app to update. To update, go to the directory where you cloned the files and run the
+          <span class="inline-code">update.sh</span> file.<br />
+        </p>
+        <p class="note">This will keep all the changes you've made.</p>
+      </div>
+      <div id="Player">
+        <h1>Player Controls</h1>
+        <img src="controls.png" alt="controls" />
+        <p class="note">Toggling the like button updates the database, but currently doesn't change in the controls immediately</p>
+      </div>
+      <div id="Shortcuts">
+        <h1 style="margin: 0;">Shortcuts</h1>
+        <h4>While the app is focused:</h4>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Space</code>
+          </div>
+          <p>Play / Pause</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Cmd/Ctrl+Left</code>
+          </div>
+          <p>Previous Track</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Cmd/Ctrl+Right</code>
+          </div>
+          <p>Next track</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Up</code>
+          </div>
+          <p>Increase Volume</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Down</code>
+          </div>
+          <p>Decrease Volume</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>S</code>
+          </div>
+          <p>Shuffle Songs</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>L</code>
+          </div>
+          <p>Loop Current Song</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>PageDown</code>
+          </div>
+          <p>Jump Back</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Left</code>
+          </div>
+          <p>Seek Back</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Right</code>
+          </div>
+          <p>Seek Forward</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>PageUp</code>
+          </div>
+          <p>Jump Forward</p>
+        </div>
+        <h4>Even if app is running in the background:</h4>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Media Play/Pause</code>
+          </div>
+          <p>Play / Pause</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Media PrevTrack</code>
+          </div>
+          <p>Previous Track</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Media NextTrack</code>
+          </div>
+          <p>Next track</p>
+        </div>
+        <div class="flex">
+          <div class="shortcut">
+            <code>Media Stop</code>
+          </div>
+          <p>Closes remote player if it is open</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
