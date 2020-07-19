@@ -13,7 +13,9 @@
 <script>
 export default {
   name: 'number-selection',
-  props: ['num'],
+  props: {
+    num: { type: Number, required: true },
+  },
 };
 </script>
 

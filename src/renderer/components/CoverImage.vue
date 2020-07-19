@@ -11,7 +11,11 @@
 <script>
 export default {
   name: 'cover-image',
-  props: ['title', 'image', 'subtitle'],
+  props: {
+    title: { type: String, required: true },
+    image: { type: [String, Array], required: true },
+    subtitle: { type: String, required: true },
+  },
 };
 </script>
 

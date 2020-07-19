@@ -8,7 +8,9 @@
 <script>
 export default {
   name: 'setting-item',
-  props: ['name'],
+  props: {
+    name: { type: String, required: true },
+  },
 };
 </script>
 

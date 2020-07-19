@@ -8,7 +8,7 @@
 <script>
 export default {
   name: 'toggle-button',
-  props: ['toggled'],
+  props: { toggled: Boolean },
 };
 </script>
 
@@ -36,8 +36,7 @@ export default {
     transform: translateX(0);
     z-index: 2;
 
-    transition: background-color 0.3s,
-      transform 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition: background-color 0.3s, transform 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
   }
   .color {
     display: inline-block;
