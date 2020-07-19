@@ -27,5 +27,9 @@ module.exports = {
     'no-underscore-dangle': 0,
     'no-console': 0,
     'no-plusplus': 0,
+    'func-names': 0,
+    'function-paren-newline': 0,
+    'comma-dangle': 0,
+    'arrow-parens': 0,
   },
 };
