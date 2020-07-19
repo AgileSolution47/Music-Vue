@@ -1,5 +1,3 @@
-
-
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 /**
@@ -20,8 +18,8 @@ const winURL = process.env.NODE_ENV === 'development' ? 'http://localhost:9080' 
 function createWindow() {
   mainWindow = new BrowserWindow({
     darkTheme: true,
-    width: 1170,
-    height: 840,
+    width: 1260,
+    height: 860,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: !dev,
