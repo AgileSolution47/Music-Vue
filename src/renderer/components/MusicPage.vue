@@ -1,5 +1,7 @@
 <template>
-  <h1>My Music</h1>
+  <div class="page" key="music">
+    <h1 class="header">My Music</h1>
+  </div>
 </template>
 
 <script>

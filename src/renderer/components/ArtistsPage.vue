@@ -1,5 +1,7 @@
 <template>
-  <h1>Artists</h1>
+  <div class="page" key="artists">
+    <h1 class="header">Artists</h1>
+  </div>
 </template>
 
 <script>

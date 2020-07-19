@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="settings page" key="settings">
     <h1 class="header">Settings</h1>
     <div class="setting">
       <p class="name">
@@ -11,40 +11,18 @@
     </div>
     <hr />
     <setting-item name="Jump Backward timer: ">
-      <number-selection
-        :num="jumpBack"
-        @prev="changeJumpBack(-1)"
-        @next="changeJumpBack(+1)"
-      />
+      <number-selection :num="jumpBack" @prev="changeJumpBack(-1)" @next="changeJumpBack(+1)" />
     </setting-item>
     <setting-item name="Seek Backward timer: ">
-      <number-selection
-        :num="seekBack"
-        @prev="changeSeekBack(-1)"
-        @next="changeSeekBack(+1)"
-      />
+      <number-selection :num="seekBack" @prev="changeSeekBack(-1)" @next="changeSeekBack(+1)" />
     </setting-item>
     <setting-item name="Seek Forward timer: ">
-      <number-selection
-        :num="seekAhead"
-        @prev="changeSeekAhead(-1)"
-        @next="changeSeekAhead(+1)"
-      />
+      <number-selection :num="seekAhead" @prev="changeSeekAhead(-1)" @next="changeSeekAhead(+1)" />
     </setting-item>
     <setting-item name="Jump Forward timer: ">
-      <number-selection
-        :num="jumpAhead"
-        @prev="changeJumpAhead(-1)"
-        @next="changeJumpAhead(+1)"
-      />
+      <number-selection :num="jumpAhead" @prev="changeJumpAhead(-1)" @next="changeJumpAhead(+1)" />
     </setting-item>
-    <button
-      :disabled="!hasChanges"
-      class="change center"
-      @click="updateChanges"
-    >
-      Change
-    </button>
+    <button :disabled="!hasChanges" class="change center" @click="updateChanges">Change</button>
     <hr />
     <setting-item name="Open Secondary Control Window when music is playing?">
       <toggle-button :toggled="controlWindow" @toggle="toggleControlWindow" />
@@ -55,13 +33,7 @@
     <hr />
     <setting-item name="Backup and Restore Data">
       <div>
-        <button
-          class="change"
-          @click="importData"
-          style="margin-right: 0.3rem;"
-        >
-          Import Data
-        </button>
+        <button class="change" @click="importData" style="margin-right: 0.3rem;">Import Data</button>
         <button class="change" @click="exportData">Export Data</button>
       </div>
     </setting-item>
@@ -128,18 +100,10 @@ export default {
 <style lang="scss" scoped>
 @import '@/vars.scss';
 
-.settings {
-  padding: 1.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 0;
-}
-
 .setting {
   @include flex-box(space-between);
 
-  width: 90%;
-  margin: 2rem auto;
+  margin: 2rem 0;
 }
 
 .name {
