@@ -31,5 +31,6 @@ module.exports = {
     'function-paren-newline': 0,
     'comma-dangle': 0,
     'arrow-parens': 0,
+    'no-mixed-operators': ['error', { allowSamePrecedence: true }],
   },
 };

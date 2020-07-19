@@ -50,7 +50,7 @@ export default {
 }
 
 .subtitle {
-  color: #bbbbbb;
-  font-size: 0.8rem;
+  color: $subtext;
+  font-size: $subtext-size;
 }
 </style>

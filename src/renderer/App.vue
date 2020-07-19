@@ -2,7 +2,7 @@
   <div id="app">
     <main>
       <side-bar />
-      <div>
+      <div id="scroll-el">
         <transition :name="transitionName">
           <router-view></router-view>
         </transition>

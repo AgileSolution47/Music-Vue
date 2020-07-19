@@ -29,7 +29,7 @@
 <script>
 import generateSubtitle from '@/helpers/generateSubtitle';
 
-import CoverImage from './CoverImage';
+import CoverImage from './shared/CoverImage';
 
 export default {
   name: 'home-page',
