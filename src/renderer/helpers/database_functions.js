@@ -11,6 +11,10 @@ const Tables = {
 
 const { app } = remote;
 
+const stringifyArr = arr => JSON.stringify(arr).slice(1, -1);
+
+const parseArr = arr => JSON.parse(`[${arr}]`);
+
 class DatabaseFunctions {
   constructor() {
     this.ready = false;
@@ -71,14 +75,6 @@ class DatabaseFunctions {
     });
   }
 
-  // _stringifyArr(arr) {
-  //   return this._escape(JSON.stringify(arr).slice(1, -1), Quotes.Single);
-  // }
-
-  // _parseArr(arr) {
-  //   return JSON.parse(`[${arr}]`);
-  // }
-
   async getNumLiked() {
     await this.isReady();
 
@@ -89,7 +85,11 @@ class DatabaseFunctions {
     await this.isReady();
 
     return {
-      songs: (await this._db.all(`SELECT * FROM ${Tables.Songs} ORDER BY NOT liked, numListens DESC LIMIT 5`)).map(s => ({
+      songs: (
+        await this._db.all(
+          `SELECT * FROM ${Tables.Songs} ORDER BY NOT liked, numListens DESC LIMIT 5`
+        )
+      ).map(s => ({
         ...s,
         liked: s.liked === 1,
       })),
@@ -100,7 +100,9 @@ class DatabaseFunctions {
   async getTopSongs() {
     await this.isReady();
 
-    return (await this._db.all(`SELECT * FROM ${Tables.Songs} ORDER BY NOT liked, numListens DESC`)).map(s => ({
+    return (
+      await this._db.all(`SELECT * FROM ${Tables.Songs} ORDER BY NOT liked, numListens DESC`)
+    ).map(s => ({
       ...s,
       liked: s.liked === 1,
     }));
@@ -111,7 +113,9 @@ class DatabaseFunctions {
 
     return (
       await this._db.all(
-        `SELECT * FROM ${Tables.Songs} ${where ? `${where ? `WHERE ${where}` : ''}` : ''} ORDER BY LOWER(title), title`,
+        `SELECT * FROM ${Tables.Songs} ${
+          where ? `${where ? `WHERE ${where}` : ''}` : ''
+        } ORDER BY LOWER(title), title`,
         ...whereArgs
       )
     ).map(s => ({
@@ -123,37 +127,55 @@ class DatabaseFunctions {
   async getAlbums(where, whereArgs = []) {
     await this.isReady();
 
-    return this._db.all(`SELECT * FROM ${Tables.Albums} ${where ? `WHERE ${where}` : ''} ORDER BY LOWER(name), name`, ...whereArgs);
+    return this._db.all(
+      `SELECT * FROM ${Tables.Albums} ${where ? `WHERE ${where}` : ''} ORDER BY LOWER(name), name`,
+      ...whereArgs
+    );
   }
 
   async getCustomAlbums(where, whereArgs = []) {
     await this.isReady();
 
-    return this._db.all(`SELECT * FROM ${Tables.CustomAlbums} ${where ? `WHERE ${where}` : ''} ORDER BY LOWER(name), name`, ...whereArgs);
+    return (
+      await this._db.all(
+        `SELECT * FROM ${Tables.CustomAlbums}
+        ${where ? `WHERE ${where}` : ''}
+        ORDER BY LOWER(name), name`,
+        ...whereArgs
+      )
+    ).map(a => ({ ...a, songs: parseArr(a.songs) }));
   }
 
   async getNumSongs(albumId) {
     await this.isReady();
 
-    return (await this._db.get(`SELECT COUNT(*) AS cnt FROM ${Tables.Songs} WHERE albumId LIKE ?`, [albumId])).cnt;
+    return (
+      await this._db.get(`SELECT COUNT(*) AS cnt FROM ${Tables.Songs} WHERE albumId LIKE ?`, [
+        albumId,
+      ])
+    ).cnt;
   }
 
   async getArtists() {
     await this.isReady();
 
-    const preSongs = await this._db.all(`SELECT artist as name, COUNT(*) as numSongs FROM ${Tables.Songs} GROUP BY artist`);
+    const preSongs = await this._db.all(
+      `SELECT artist as name, COUNT(*) as numSongs FROM ${Tables.Songs} GROUP BY artist`
+    );
 
-    const artists = preSongs.map(async preSong => {
-      const images = await this._db.all(
-        `SELECT imagePath FROM ${Tables.Albums} WHERE artist LIKE ? ORDER BY numSongs DESC LIMIT 4`,
-        preSong.name
-      );
+    const artists = await Promise.all(
+      preSongs.map(async preSong => {
+        const images = await this._db.all(
+          `SELECT imagePath FROM ${Tables.Albums} WHERE artist LIKE ? ORDER BY numSongs DESC LIMIT 4`,
+          preSong.name
+        );
 
-      return {
-        ...preSong,
-        images: images.length === 4 ? images : [images[0]],
-      };
-    });
+        return {
+          ...preSong,
+          images: images.length === 4 ? images.map(i => i.imagePath) : [images[0].imagePath],
+        };
+      })
+    );
 
     return artists;
   }
@@ -164,25 +186,32 @@ class DatabaseFunctions {
     const keys = `(${Object.keys(values).join(',')})`;
     const questionMarks = `(${new Array(keys.length).fill('?').join(',')})`;
 
-    return this._db.exec(`INSERT INTO ${table} ${keys} VALUES ${questionMarks}`, ...Object.values(values));
+    return this._db.exec(
+      `INSERT INTO ${table} ${keys} VALUES ${questionMarks}`,
+      ...Object.values(values)
+    );
   }
 
   async insertSong(song) {
-    return this.insert(Tables.Songs, song.toMap());
+    return this.insert(Tables.Songs, song);
   }
 
   async insertAlbum(album) {
-    return this.insert(Tables.Albums, album.toMap());
+    return this.insert(Tables.Albums, album);
   }
 
   async insertCustomAlbum(customAlbum) {
-    return this.insert(Tables.CustomAlbums, customAlbum.toMap());
+    return this.insert(Tables.CustomAlbums, {
+      ...customAlbum,
+      songs: stringifyArr(customAlbum.songs),
+    });
   }
 
   async delete(table, where, whereArgs = []) {
     await this.isReady();
 
-    return (await this._db.run(`DELETE FROM ${table} ${where ? `WHERE ${where}` : ''}`, whereArgs)).changes;
+    return (await this._db.run(`DELETE FROM ${table} ${where ? `WHERE ${where}` : ''}`, whereArgs))
+      .changes;
   }
 
   async deleteSong(title) {
@@ -214,14 +243,41 @@ class DatabaseFunctions {
 
     const keys = `(${Object.keys(values).join(' = ?,')})`;
 
-    return (await this._db.run(`UPDATE ${table} SET ${keys} ${where ? `WHERE ${where}` : ''}`, ...Object.values(values), ...whereArgs))
-      .changes;
+    return (
+      await this._db.run(
+        `UPDATE ${table} SET ${keys} ${where ? `WHERE ${where}` : ''}`,
+        ...Object.values(values),
+        ...whereArgs
+      )
+    ).changes;
+  }
+
+  async updateSong(song) {
+    return this.update(Tables.Songs, song, 'title LIKE ?', [song.title]);
+  }
+
+  async updateAlbum(album) {
+    return this.update(Tables.Albums, album, 'id LIKE ?', [album.id]);
+  }
+
+  async updateCustomAlbum(album) {
+    return this.update(
+      Tables.CustomAlbums,
+      { ...album, songs: stringifyArr(album.songs) },
+      'id LIKE ?',
+      [album.id]
+    );
   }
 
   async incrementNumListens(song) {
     await this.isReady();
 
-    return (await this._db.run(`UPDATE ${Tables.Songs} SET numListens = numListens + 1 WHERE title LIKE ?`, song.title)).changes;
+    return (
+      await this._db.run(
+        `UPDATE ${Tables.Songs} SET numListens = numListens + 1 WHERE title LIKE ?`,
+        song.title
+      )
+    ).changes;
   }
 
   async nextCustomAlbumId() {

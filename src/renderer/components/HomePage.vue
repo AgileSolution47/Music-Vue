@@ -50,7 +50,7 @@ export default {
       return this.topAlbums.map(a =>
         generateSubtitle({
           type: 'Album',
-          numSongs: a.numSongs,
+          artist: a.artist,
         })
       );
     },
@@ -76,7 +76,7 @@ export default {
   flex-wrap: wrap;
   margin-top: 1rem;
   margin-bottom: 2.5rem;
-  height: 14rem;
+  min-height: 14rem;
 
   .cover-image {
     &-move {

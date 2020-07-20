@@ -3,7 +3,7 @@
     <div>
       <router-link to="/" class="item no-hover">
         <div class="first">
-          <img src="../../resources/logo.png" alt="Music Logo" />
+          <img src="@/assets/logo.png" alt="Music Logo" />
         </div>
         <div class="second">
           <h5>Music</h5>
