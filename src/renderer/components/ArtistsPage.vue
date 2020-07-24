@@ -9,6 +9,7 @@
           :title="artist.name"
           :subtitle="subtitles[index]"
           :images="artist.images"
+          @click="$router.push({ name: 'artist-page', query: artist })"
         />
       </ul>
     </div>

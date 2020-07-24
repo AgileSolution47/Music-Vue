@@ -11,6 +11,7 @@
             :title="album.name"
             :subtitle="albumSubtitles[index]"
             :image="album.imagePath"
+            @click="$router.push({ name: 'album-page', query: album })"
           />
         </transition-group>
         <h1 class="header">Top Songs</h1>

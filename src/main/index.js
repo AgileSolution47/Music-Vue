@@ -13,13 +13,16 @@ if (process.env.NODE_ENV !== 'development') {
 const dev = !app.isPackaged;
 
 let mainWindow;
-const winURL = process.env.NODE_ENV === 'development' ? 'http://localhost:9080' : `file://${__dirname}/index.html`;
+const winURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080'
+    : `file://${__dirname}/index.html`;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     darkTheme: true,
     width: 1260,
-    height: 860,
+    height: 875,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: !dev,

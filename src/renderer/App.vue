@@ -22,6 +22,7 @@ const paths = {
   '/albums/album': [0, 3, 1],
   '/albums/liked': [0, 3, 1],
   '/albums': [0, 3, 0],
+  '/artists/artist': [0, 4, 1],
   '/artists': [0, 4, 0],
   '/settings': [0, 5, 0],
 };

@@ -5,6 +5,7 @@ import HomePage from '@/components/HomePage';
 import MusicPage from '@/components/MusicPage';
 import AlbumPage from '@/components/AlbumPage';
 import AlbumsPage from '@/components/AlbumsPage';
+import ArtistPage from '@/components/ArtistPage';
 import ArtistsPage from '@/components/ArtistsPage';
 import SettingsPage from '@/components/SettingsPage';
 
@@ -56,6 +57,14 @@ export default new Router({
       path: '/artists',
       name: 'artists-page',
       component: ArtistsPage,
+    },
+    {
+      path: '/artists/artist',
+      name: 'artist-page',
+      component: ArtistPage,
+      props: options => ({
+        artist: options.query,
+      }),
     },
     {
       path: '/settings',

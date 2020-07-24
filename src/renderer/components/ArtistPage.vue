@@ -1,10 +1,10 @@
 <template>
-  <div class="scroll-el" id="scroll-el" key="album">
+  <div class="scroll-el" id="scroll-el" key="artist">
     <div class="page">
-      <section class="album-details">
-        <img :src="image" alt="Album Art" />
-        <h3>{{ album.name }}</h3>
-        <p v-if="!isCustom" class="subtext">{{ subtext }}</p>
+      <section class="artist-details">
+        <mozaic-image :images="artist.images" :title="artist.name" />
+        <h3>{{ artist.name }}</h3>
+        <p class="subtext">{{ subtext }}</p>
 
         <div class="button-bar">
           <button class="btn">Play All</button>
@@ -29,30 +29,26 @@
 <script>
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal';
 
-import musicSymbol from '@/assets/music_symbol.png';
 import generateSubtitle from '@/helpers/generateSubtitle';
 
+import MozaicImage from './shared/MozaicImage';
 import SongItem from './shared/SongItem';
 
 export default {
-  name: 'album-page',
+  name: 'artist-page',
   data() {
     return {
       songs: [],
     };
   },
   props: {
-    album: Object,
-    isCustom: Boolean,
+    artist: Object,
   },
   computed: {
-    image() {
-      return this.isCustom ? musicSymbol : this.album.imagePath;
-    },
     subtext() {
       return generateSubtitle({
-        type: 'Album',
-        artist: this.album.artist,
+        type: 'Artist',
+        numSongs: this.songs.length,
       });
     },
   },
@@ -65,13 +61,14 @@ export default {
     },
   },
   beforeMount() {
-    window.db.getSongs('albumId LIKE ?', [this.album.id]).then(songs => {
+    window.db.getSongs('artist LIKE ?', [this.artist.name]).then(songs => {
       this.songs = songs;
     });
   },
   components: {
-    SongItem,
     DotsHorizontalIcon,
+    MozaicImage,
+    SongItem,
   },
 };
 </script>
@@ -86,7 +83,7 @@ export default {
   padding-bottom: 0;
 }
 
-.album-details {
+.artist-details {
   @include flex-box($direction: column);
 
   flex-basis: 400px;
@@ -96,7 +93,7 @@ export default {
   transform: translateY(-50%);
   bottom: auto;
 
-  img {
+  .mozaic {
     width: 270px;
     height: 270px;
     border-radius: 10px;
@@ -136,7 +133,7 @@ export default {
   .page {
     flex-direction: column;
 
-    .album-details {
+    .artist-details {
       position: static;
       transform: translateY(0);
       width: 100%;
