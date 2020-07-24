@@ -1,35 +1,37 @@
 <template>
-  <div class="page" key="music">
-    <context-menu
-      :items="items"
-      :posx="posx"
-      :posy="posy"
-      @reset="reset"
-      @play="playSong"
-      @addtoalbum="addToAlbum"
-      @toggleLike="toggleLike"
-      @delete="deleteSong"
-    />
-    <header>
-      <h1 class="header">My Music</h1>
-      <search-bar v-if="allSongs !== null" placeholder="Filter" @search="searchQuery = $event" />
-    </header>
-    <div class="button-bar">
-      <button class="btn">Play All</button>
-      <button class="btn">Play Random</button>
+  <div class="scroll-el" id="scroll-el" key="music">
+    <div class="page">
+      <context-menu
+        :items="items"
+        :posx="posx"
+        :posy="posy"
+        @reset="reset"
+        @play="playSong"
+        @addtoalbum="addToAlbum"
+        @toggleLike="toggleLike"
+        @delete="deleteSong"
+      />
+      <header>
+        <h1 class="header">My Music</h1>
+        <search-bar v-if="allSongs !== null" placeholder="Filter" @search="searchQuery = $event" />
+      </header>
+      <div class="button-bar">
+        <button class="btn">Play All</button>
+        <button class="btn">Play Random</button>
+      </div>
+      <p v-if="songs === null || songs.length === 0" class="nothing">No Songs</p>
+      <template v-else>
+        <song-item
+          v-for="(song, index) of songs"
+          :key="song.title"
+          :song="song"
+          @right-click="openContextMenu($event, index)"
+          @left-click="playSong(index)"
+        >
+          <dots-horizontal-icon title="Options" @click.stop="openContextMenu($event, index)" />
+        </song-item>
+      </template>
     </div>
-    <p v-if="songs === null || songs.length === 0" class="nothing">No Songs</p>
-    <template v-else>
-      <song-item
-        v-for="(song, index) of songs"
-        :key="song.title"
-        :song="song"
-        @right-click="openContextMenu($event, index)"
-        @left-click="playSong(index)"
-      >
-        <dots-horizontal-icon title="Options" @click.stop="openContextMenu($event, index)" />
-      </song-item>
-    </template>
   </div>
 </template>
 

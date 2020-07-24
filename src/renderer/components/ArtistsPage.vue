@@ -1,15 +1,17 @@
 <template>
-  <div class="page" key="artists">
-    <h1 class="header">Artists</h1>
-    <ul class="artists">
-      <cover-image
-        v-for="(artist, index) in artists"
-        :key="artist.name"
-        :title="artist.name"
-        :subtitle="subtitles[index]"
-        :images="artist.images"
-      />
-    </ul>
+  <div class="scroll-el" id="scroll-el" key="artists">
+    <div class="page">
+      <h1 class="header">Artists</h1>
+      <ul class="artists">
+        <cover-image
+          v-for="(artist, index) in artists"
+          :key="artist.name"
+          :title="artist.name"
+          :subtitle="subtitles[index]"
+          :images="artist.images"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -35,7 +37,6 @@ export default {
   },
   beforeMount() {
     window.db.getArtists().then(artists => {
-      console.log(artists);
       this.artists = artists;
     });
   },

@@ -1,28 +1,30 @@
 <template>
-  <div class="page" key="home">
-    <p v-if="topSongs === null" class="nothing">No Songs</p>
-    <template v-else>
-      <h1 class="header">Top Albums</h1>
-      <transition-group tag="ul" name="cover-image" class="cover-images">
-        <cover-image
-          v-for="(album, index) in topAlbums"
-          :key="album.id"
-          :title="album.name"
-          :subtitle="albumSubtitles[index]"
-          :image="album.imagePath"
-        />
-      </transition-group>
-      <h1 class="header">Top Songs</h1>
-      <transition-group tag="ul" name="cover-image" class="cover-images">
-        <cover-image
-          v-for="(song, index) in topSongs"
-          :key="song.title"
-          :title="song.title"
-          :subtitle="songSubtitles[index]"
-          :image="song.thumbnail"
-        />
-      </transition-group>
-    </template>
+  <div class="scroll-el" id="scroll-el" key="home">
+    <div class="page">
+      <p v-if="topSongs === null" class="nothing">No Songs</p>
+      <template v-else>
+        <h1 class="header">Top Albums</h1>
+        <transition-group tag="ul" name="cover-image" class="cover-images">
+          <cover-image
+            v-for="(album, index) in topAlbums"
+            :key="album.id"
+            :title="album.name"
+            :subtitle="albumSubtitles[index]"
+            :image="album.imagePath"
+          />
+        </transition-group>
+        <h1 class="header">Top Songs</h1>
+        <transition-group tag="ul" name="cover-image" class="cover-images">
+          <cover-image
+            v-for="(song, index) in topSongs"
+            :key="song.title"
+            :title="song.title"
+            :subtitle="songSubtitles[index]"
+            :image="song.thumbnail"
+          />
+        </transition-group>
+      </template>
+    </div>
   </div>
 </template>
 

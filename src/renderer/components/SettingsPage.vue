@@ -1,42 +1,44 @@
 <template>
-  <div class="settings page" key="settings">
-    <h1 class="header">Settings</h1>
-    <div class="setting">
-      <p class="name">
-        Directory from which songs are taken:
-        <span v-if="folderStored.length">{{ folderStored }}</span>
-        <span v-else>Unset</span>
-      </p>
-      <button class="change" @click="changeDirectory">Change Directory</button>
-    </div>
-    <hr />
-    <setting-item name="Jump Backward timer: ">
-      <number-selection :num="jumpBack" @prev="changeJumpBack(-1)" @next="changeJumpBack(+1)" />
-    </setting-item>
-    <setting-item name="Seek Backward timer: ">
-      <number-selection :num="seekBack" @prev="changeSeekBack(-1)" @next="changeSeekBack(+1)" />
-    </setting-item>
-    <setting-item name="Seek Forward timer: ">
-      <number-selection :num="seekAhead" @prev="changeSeekAhead(-1)" @next="changeSeekAhead(+1)" />
-    </setting-item>
-    <setting-item name="Jump Forward timer: ">
-      <number-selection :num="jumpAhead" @prev="changeJumpAhead(-1)" @next="changeJumpAhead(+1)" />
-    </setting-item>
-    <button :disabled="!hasChanges" class="change center" @click="updateChanges">Change</button>
-    <hr />
-    <setting-item name="Open Secondary Control Window when music is playing?">
-      <toggle-button :toggled="controlWindow" @toggle="toggleControlWindow" />
-    </setting-item>
-    <setting-item name="Animate between pages">
-      <toggle-button :toggled="animations" @toggle="toggleAnimations" />
-    </setting-item>
-    <hr />
-    <setting-item name="Backup and Restore Data">
-      <div>
-        <button class="change" @click="importData" style="margin-right: 0.3rem;">Import Data</button>
-        <button class="change" @click="exportData">Export Data</button>
+  <div class="scroll-el" id="scroll-el" key="settings">
+    <div class="page">
+      <h1 class="header">Settings</h1>
+      <div class="setting">
+        <p class="name">
+          Directory from which songs are taken:
+          <span v-if="folderStored.length">{{ folderStored }}</span>
+          <span v-else>Unset</span>
+        </p>
+        <button class="change" @click="changeDirectory">Change Directory</button>
       </div>
-    </setting-item>
+      <hr />
+      <setting-item name="Jump Backward timer: ">
+        <number-selection :num="jumpBack" @prev="changeJumpBack(-1)" @next="changeJumpBack(+1)" />
+      </setting-item>
+      <setting-item name="Seek Backward timer: ">
+        <number-selection :num="seekBack" @prev="changeSeekBack(-1)" @next="changeSeekBack(+1)" />
+      </setting-item>
+      <setting-item name="Seek Forward timer: ">
+        <number-selection :num="seekAhead" @prev="changeSeekAhead(-1)" @next="changeSeekAhead(+1)" />
+      </setting-item>
+      <setting-item name="Jump Forward timer: ">
+        <number-selection :num="jumpAhead" @prev="changeJumpAhead(-1)" @next="changeJumpAhead(+1)" />
+      </setting-item>
+      <button :disabled="!hasChanges" class="change center" @click="updateChanges">Change</button>
+      <hr />
+      <setting-item name="Open Secondary Control Window when music is playing?">
+        <toggle-button :toggled="controlWindow" @toggle="toggleControlWindow" />
+      </setting-item>
+      <setting-item name="Animate between pages">
+        <toggle-button :toggled="animations" @toggle="toggleAnimations" />
+      </setting-item>
+      <hr />
+      <setting-item name="Backup and Restore Data">
+        <div>
+          <button class="change" @click="importData" style="margin-right: 0.3rem;">Import Data</button>
+          <button class="change" @click="exportData">Export Data</button>
+        </div>
+      </setting-item>
+    </div>
   </div>
 </template>
 

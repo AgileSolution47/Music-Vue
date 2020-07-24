@@ -2,7 +2,8 @@
   <div id="app">
     <main>
       <side-bar />
-      <div id="scroll-el">
+
+      <div>
         <transition :name="transitionName">
           <router-view></router-view>
         </transition>
@@ -18,6 +19,8 @@ const paths = {
   '/': [0, 0, 0],
   '/home': [0, 1, 0],
   '/music': [0, 2, 0],
+  '/albums/album': [0, 3, 1],
+  '/albums/liked': [0, 3, 1],
   '/albums': [0, 3, 0],
   '/artists': [0, 4, 0],
   '/settings': [0, 5, 0],
@@ -52,8 +55,6 @@ export default {
       } else if (zto < zfrom) {
         transitionName += '-below';
       }
-
-      console.log(transitionName);
 
       return transitionName;
     },

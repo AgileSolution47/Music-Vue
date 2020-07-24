@@ -1,5 +1,5 @@
 <template>
-  <div class="cover-image">
+  <div class="cover-image" @click="$emit('click')">
     <img v-if="isSingleImage" :src="singleImage" :alt="title" :title="title" />
     <div v-else class="mozaic" :title="title">
       <img v-for="image of images" :key="image" :src="image" :alt="title" />

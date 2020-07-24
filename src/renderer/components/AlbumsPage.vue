@@ -1,29 +1,33 @@
 <template>
-  <div class="page" key="albums">
-    <h1 class="header">Custom Albums</h1>
-    <ul class="albums">
-      <cover-image title="Liked" :subtitle="likedSubtitle" :image="likedImage" />
-      <cover-image
-        v-for="(album, index) in customAlbums"
-        :key="album.id"
-        :title="album.name"
-        :subtitle="customAlbumSubtitles[index]"
-        :image="musicSymbol"
-      />
-      <button class="plus" title="Add Custom Album">
-        <plus-icon />
-      </button>
-    </ul>
-    <h1 class="header">Albums</h1>
-    <ul class="albums">
-      <cover-image
-        v-for="(album, index) in albums"
-        :key="album.id"
-        :title="album.name"
-        :subtitle="albumSubtitles[index]"
-        :image="album.imagePath"
-      />
-    </ul>
+  <div class="scroll-el" id="scroll-el" key="albums">
+    <div class="page">
+      <h1 class="header">Custom Albums</h1>
+      <ul class="albums">
+        <cover-image title="Liked" :subtitle="likedSubtitle" :image="likedImage" />
+        <cover-image
+          v-for="(album, index) in customAlbums"
+          :key="album.id"
+          :title="album.name"
+          :subtitle="customAlbumSubtitles[index]"
+          :image="musicSymbol"
+          @click="$router.push({ path: '/album', query: album });"
+        />
+        <button class="plus" title="Add Custom Album">
+          <plus-icon />
+        </button>
+      </ul>
+      <h1 class="header">Albums</h1>
+      <ul class="albums">
+        <cover-image
+          v-for="(album, index) in albums"
+          :key="album.id"
+          :title="album.name"
+          :subtitle="albumSubtitles[index]"
+          :image="album.imagePath"
+          @click="gotoAlbum(album)"
+        />
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -61,6 +65,11 @@ export default {
           numSongs: a.numSongs,
         })
       );
+    },
+  },
+  methods: {
+    gotoAlbum(album) {
+      this.$router.push({ name: 'album-page', query: album });
     },
   },
   beforeMount() {
