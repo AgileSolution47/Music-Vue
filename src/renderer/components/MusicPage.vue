@@ -73,38 +73,41 @@ export default {
     ],
     posx: -200,
     posy: -200,
+    index: -1,
   }),
   methods: {
-    playSong(index) {
+    playSong() {
       console.log('PLAY', {
-        index,
-        song: this.songs[index],
+        index: this.index,
+        song: this.songs[this.index],
       });
       this.reset();
     },
-    addToAlbum(index) {
+    addToAlbum() {
       console.log('ADD', {
-        index,
-        song: this.songs[index],
+        index: this.index,
+        song: this.songs[this.index],
       });
       this.reset();
     },
-    toggleLike(index) {
+    toggleLike() {
       console.log({
-        index,
-        liked: this.songs[index].liked,
+        index: this.index,
+        liked: this.songs[this.index].liked,
       });
       this.reset();
     },
-    deleteSong(index) {
+    deleteSong() {
       console.log('DELETE', {
-        index,
-        song: this.songs[index],
+        index: this.index,
+        song: this.songs[this.index],
       });
       this.reset();
     },
     openContextMenu(event, index) {
       const { liked } = this.songs[index];
+
+      this.index = index;
 
       this.items[2].title = liked ? 'Unlike' : 'Like';
       this.items[2].icon = liked ? 'heart-icon' : 'heart-outline-icon';
@@ -113,8 +116,6 @@ export default {
 
       this.posx = event.pageX + scrollEl.scrollLeft - 50;
       this.posy = event.pageY + scrollEl.scrollTop;
-
-      console.log(this.posx, this.posy);
     },
     reset() {
       this.posx = -200;

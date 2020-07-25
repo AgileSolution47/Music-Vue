@@ -1,16 +1,31 @@
 <template>
   <div class="scroll-el" id="scroll-el" key="albums">
     <div class="page">
+      <context-menu
+        :items="items"
+        :posx="posx"
+        :posy="posy"
+        @reset="reset"
+        @playAlbum="playAlbum"
+        @playCustomAlbum="playCustomAlbum"
+        @deleteCustomAlbum="deleteCustomAlbum"
+      />
       <h1 class="header">Custom Albums</h1>
       <ul class="albums">
-        <cover-image title="Liked" :subtitle="likedSubtitle" :image="likedImage" />
+        <cover-image
+          title="Liked"
+          :subtitle="likedSubtitle"
+          :image="likedImage"
+          @right-click="openContextMenu($event, -1, false)"
+        />
         <cover-image
           v-for="(album, index) in customAlbums"
           :key="album.id"
           :title="album.name"
           :subtitle="customAlbumSubtitles[index]"
           :image="musicSymbol"
-          @click="$router.push({ path: '/album', query: album });"
+          @left-click="$router.push({ name: 'album-page', query: album })"
+          @right-click="openContextMenu($event, index, true)"
         />
         <button class="plus" title="Add Custom Album">
           <plus-icon />
@@ -24,7 +39,8 @@
           :title="album.name"
           :subtitle="albumSubtitles[index]"
           :image="album.imagePath"
-          @click="gotoAlbum(album)"
+          @left-click="$router.push({ name: 'album-page', query: album })"
+          @right-click="openContextMenu($event, index, false)"
         />
       </ul>
     </div>
@@ -39,6 +55,7 @@ import musicSymbol from '@/assets/music_symbol.png';
 import likedImage from '@/assets/liked.png';
 
 import CoverImage from './shared/CoverImage';
+import ContextMenu from './shared/ContextMenu';
 
 export default {
   name: 'albums-page',
@@ -48,6 +65,30 @@ export default {
     likedSubtitle: '',
     albums: [],
     customAlbums: [],
+    posx: -200,
+    posy: -200,
+    albumItems: [
+      {
+        icon: 'playlist-play-icon',
+        title: 'Play',
+        handler: 'playAlbum',
+      },
+    ],
+    customAlbumItems: [
+      {
+        icon: 'playlist-play-icon',
+        title: 'Play',
+        handler: 'playCustomAlbum',
+      },
+      {
+        icon: 'delete-icon',
+        title: 'Delete',
+        colour: 'red',
+        handler: 'deleteCustomAlbum',
+      },
+    ],
+    items: [],
+    index: -1,
   }),
   computed: {
     customAlbumSubtitles() {
@@ -68,8 +109,48 @@ export default {
     },
   },
   methods: {
-    gotoAlbum(album) {
-      this.$router.push({ name: 'album-page', query: album });
+    playAlbum() {
+      if (this.index === -1) {
+        console.log('PLAY LIKED: ', this.likedSubtitle);
+      } else {
+        console.log('PLAY ALBUM', {
+          index: this.index,
+          album: this.albums[this.index],
+        });
+      }
+      this.reset();
+    },
+    playCustomAlbum() {
+      console.log('PLAY CUSTOM ALBUM', {
+        index: this.index,
+        album: this.customAlbums[this.index],
+      });
+      this.reset();
+    },
+    deleteCustomAlbum() {
+      console.log('DELETE CUSTOM ALBUM', {
+        index: this.index,
+        album: this.customAlbums[this.index],
+      });
+      this.reset();
+    },
+    openContextMenu(event, index, deletable) {
+      const scrollEl = document.getElementById('scroll-el');
+
+      if (deletable) {
+        this.items = this.customAlbumItems;
+      } else {
+        this.items = this.albumItems;
+      }
+
+      this.index = index;
+
+      this.posx = event.pageX + scrollEl.scrollLeft - 50;
+      this.posy = event.pageY + scrollEl.scrollTop;
+    },
+    reset() {
+      this.posx = -200;
+      this.posy = -200;
     },
   },
   beforeMount() {
@@ -86,6 +167,7 @@ export default {
   components: {
     PlusIcon,
     CoverImage,
+    ContextMenu,
   },
 };
 </script>

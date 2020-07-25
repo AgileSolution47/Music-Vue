@@ -1,5 +1,9 @@
 <template>
-  <div class="cover-image" @click="$emit('click')">
+  <div
+    class="cover-image"
+    @click.left="$emit('left-click', $event)"
+    @click.right="$emit('right-click', $event)"
+  >
     <img v-if="image !== null && image !== undefined" :src="image" :alt="title" />
     <mozaic-image v-else :images="images" :title="title" />
     <div class="text">

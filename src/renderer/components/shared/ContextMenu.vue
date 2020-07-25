@@ -10,7 +10,7 @@
       v-for="(item, index) of items"
       :key="index"
       :style="{ color: item.colour || 'currentColor' }"
-      @click="$emit(item.handler, index)"
+      @click="$emit(item.handler)"
     >
       <span>{{ item.title }}</span>
       <component :is="item.icon" :title="item.title"></component>
@@ -68,6 +68,7 @@ export default {
   transform: translate(-50%, 10px);
   position: absolute;
   overflow: hidden;
+  width: 10.5rem;
 
   .padding {
     height: 0.6rem;
