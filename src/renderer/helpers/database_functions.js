@@ -241,7 +241,7 @@ class DatabaseFunctions {
   async update(table, values, where, whereArgs = []) {
     await this.isReady();
 
-    const keys = `(${Object.keys(values).join(' = ?,')})`;
+    const keys = `${Object.keys(values).join(' = ?,')} = ?`;
 
     return (
       await this._db.run(

@@ -1,5 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
+
+import { downloadImage } from './downloader';
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -50,6 +52,8 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+ipcMain.handle('download:image', (_, albumId) => downloadImage(albumId));
 
 /**
  * Auto Updater
