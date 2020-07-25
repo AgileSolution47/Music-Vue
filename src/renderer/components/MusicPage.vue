@@ -129,6 +129,7 @@ export default {
   },
   computed: {
     songs() {
+      if (this.allSongs === null) return null;
       return this.allSongs.filter(s => {
         const hay = s.title.toLowerCase();
         let i = 0;
