@@ -15,8 +15,7 @@ const state = {
 
 const configPath = path.join(remote.app.getPath('userData'), 'config.json');
 
-const updateFile = settings =>
-  fs.promises.writeFile(configPath, JSON.stringify(settings));
+const updateFile = settings => fs.promises.writeFile(configPath, JSON.stringify(settings));
 
 const mutations = {
   load(state, settings) {
@@ -57,6 +56,7 @@ const mutations = {
   },
   setFolderStored(state, folderStored) {
     state.folderStored = folderStored;
+    updateFile();
   },
 };
 
