@@ -1,28 +1,19 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import HomePage from '@/components/HomePage';
-import MusicPage from '@/components/MusicPage';
 import AlbumPage from '@/components/AlbumPage';
 import AlbumsPage from '@/components/AlbumsPage';
 import ArtistPage from '@/components/ArtistPage';
 import ArtistsPage from '@/components/ArtistsPage';
+import HomePage from '@/components/HomePage';
+import LikedPage from '@/components/LikedPage';
+import MusicPage from '@/components/MusicPage';
 import SettingsPage from '@/components/SettingsPage';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: HomePage,
-    },
-    {
-      path: '/music',
-      name: 'My Music',
-      component: MusicPage,
-    },
     {
       path: '/albums/album',
       name: '\\album-page',
@@ -65,6 +56,21 @@ export default new Router({
       props: options => ({
         artist: options.query,
       }),
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: HomePage,
+    },
+    {
+      path: '/albums/liked',
+      name: '\\liked-page',
+      component: LikedPage,
+    },
+    {
+      path: '/music',
+      name: 'My Music',
+      component: MusicPage,
     },
     {
       path: '/settings',
