@@ -26,7 +26,6 @@ export default {
   },
   beforeMount() {
     window.db.getSongs('liked').then(songs => {
-      console.log({ songs });
       this.songs = songs;
     });
   },

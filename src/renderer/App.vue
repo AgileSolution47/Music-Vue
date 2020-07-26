@@ -2,7 +2,7 @@
   <div id="app">
     <main>
       <side-bar />
-      <header :style="{ opacity: headerOpacity }">
+      <header v-if="apiKeysValid" :style="{ opacity: headerOpacity }">
         <div></div>
         <div :style="{ opacity: titleOpacity }">
           <h3>{{ pageTitle }}</h3>
@@ -22,6 +22,8 @@
 
 <script>
 import { debounce } from 'lodash';
+import { mapGetters } from 'vuex';
+
 import SideBar from './components/SideBar';
 import SearchBar from './components/shared/SearchBar';
 
@@ -36,6 +38,7 @@ const paths = {
   '/artists': [0, 4, 0],
   '/settings': [0, 5, 0],
   '/search': [1, 0, 0],
+  '/register-keys': [2, 0, 0],
 };
 
 export default {
@@ -49,6 +52,9 @@ export default {
     this.$store.dispatch('settings/load');
     window.store = this.$store;
     document.getElementById('scroll-el').addEventListener('scroll', this.onScroll);
+    if (!this.apiKeysValid && this.$route.path !== '/register-keys') {
+      this.$router.push('/register-keys');
+    }
   },
   methods: {
     onScroll(event) {
@@ -79,7 +85,7 @@ export default {
     },
     search: debounce(function(query) {
       this.$store.dispatch('searchResults/search', query);
-    }),
+    }, 700),
     handleSearch(query) {
       if (this.$route.name !== 'Download') this.$router.push('/search');
       this.search(query);
@@ -87,10 +93,11 @@ export default {
   },
   computed: {
     pageTitle() {
-      const temp = this.$route.name[0] === '\\' ? '' : this.$route.name;
-      console.log(temp);
-      return temp;
+      return this.$route.name[0] === '\\' ? '' : this.$route.name;
     },
+    ...mapGetters('apiKeys', {
+      apiKeysValid: 'valid',
+    }),
   },
   components: {
     SideBar,
@@ -101,7 +108,6 @@ export default {
       this.transitionName = this.getTransitionName(to, from);
       this.headerOpacity = to.name[0] === '\\' ? 0 : 1;
       this.titleOpacity = 0;
-      console.log(this.headerOpacity);
       if (to.name === 'Download') this.$store.commit('searchResults/clear');
       setTimeout(() => {
         const [prevScreen, nextScreen] = document.querySelectorAll('#scroll-el');

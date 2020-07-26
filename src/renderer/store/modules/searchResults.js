@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const NAPSTER_API_KEY = 'YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4';
-
 const state = {
   results: [],
   error: null,
@@ -21,12 +19,12 @@ const mutations = {
 };
 
 const actions = {
-  async search({ commit }, query) {
+  async search({ commit, rootState }, query) {
     if (query.trim().length === 0) return;
     try {
       const response = await axios.get('https://api.napster.com/v2.2/search', {
         params: {
-          apikey: NAPSTER_API_KEY,
+          apikey: rootState.apiKeys.napster,
           type: 'track',
           per_type_limit: 10,
           query,

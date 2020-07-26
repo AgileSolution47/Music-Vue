@@ -8,6 +8,7 @@ import ArtistsPage from '@/components/ArtistsPage';
 import HomePage from '@/components/HomePage';
 import LikedPage from '@/components/LikedPage';
 import MusicPage from '@/components/MusicPage';
+import RegisterApiKeysPage from '@/components/RegisterApiKeysPage';
 import SearchPage from '@/components/SearchPage';
 import SettingsPage from '@/components/SettingsPage';
 
@@ -72,6 +73,11 @@ export default new Router({
       path: '/music',
       name: 'My Music',
       component: MusicPage,
+    },
+    {
+      path: '/register-keys',
+      name: 'Register Api Keys',
+      component: RegisterApiKeysPage,
     },
     {
       path: '/search',

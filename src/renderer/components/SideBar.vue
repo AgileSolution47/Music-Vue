@@ -1,55 +1,80 @@
 <template>
   <nav class="sidebar">
     <div>
-      <router-link to="/" class="item no-hover">
+      <component :is="disabled ? 'span' : 'router-link'" to="/" class="item no-hover">
         <div class="first">
           <img src="@/assets/logo.png" alt="Music Logo" />
         </div>
         <div class="second">
           <h5>Music</h5>
         </div>
-      </router-link>
-      <router-link to="/" exact-active-class="sel" class="item">
+      </component>
+      <component
+        :is="disabled ? 'span' : 'router-link'"
+        to="/"
+        exact-active-class="sel"
+        class="item"
+      >
         <div class="first">
           <home-icon title="Home" />
         </div>
         <div class="second">
           <h6>Home</h6>
         </div>
-      </router-link>
-      <router-link to="/music" active-class="sel" class="item">
+      </component>
+      <component
+        :is="disabled ? 'span' : 'router-link'"
+        to="/music"
+        active-class="sel"
+        class="item"
+      >
         <div class="first">
           <music-note-icon title="My Music" />
         </div>
         <div class="second">
           <h6>My Music</h6>
         </div>
-      </router-link>
-      <router-link to="/albums" active-class="sel" class="item">
+      </component>
+      <component
+        :is="disabled ? 'span' : 'router-link'"
+        to="/albums"
+        active-class="sel"
+        class="item"
+      >
         <div class="first">
           <music-box-multiple-icon title="Albums" />
         </div>
         <div class="second">
           <h6>Albums</h6>
         </div>
-      </router-link>
-      <router-link to="/artists" active-class="sel" class="item">
+      </component>
+      <component
+        :is="disabled ? 'span' : 'router-link'"
+        to="/artists"
+        active-class="sel"
+        class="item"
+      >
         <div class="first">
           <account-multiple-icon title="Artists" />
         </div>
         <div class="second">
           <h6>Artists</h6>
         </div>
-      </router-link>
+      </component>
     </div>
-    <router-link to="/settings" active-class="sel" class="item">
+    <component
+      :is="disabled ? 'span' : 'router-link'"
+      to="/settings"
+      active-class="sel"
+      class="item"
+    >
       <div class="first">
         <cog-icon title="Settings" />
       </div>
       <div class="second">
         <h6>Settings</h6>
       </div>
-    </router-link>
+    </component>
   </nav>
 </template>
 
@@ -59,9 +84,18 @@ import MusicBoxMultipleIcon from 'vue-material-design-icons/MusicBoxMultiple';
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple';
 import HomeIcon from 'vue-material-design-icons/Home';
 import CogIcon from 'vue-material-design-icons/Cog';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'side-bar',
+  computed: {
+    disabled() {
+      return !this.apiKeysValid;
+    },
+    ...mapGetters('apiKeys', {
+      apiKeysValid: 'valid',
+    }),
+  },
   components: {
     MusicNoteIcon,
     MusicBoxMultipleIcon,
@@ -140,6 +174,16 @@ export default {
     &.no-hover:hover {
       background: $secondary;
       // cursor: auto;
+    }
+  }
+
+  span.item {
+    color: #aaaaaa;
+    cursor: not-allowed !important;
+
+    &.no-hover {
+      color: white;
+      cursor: default !important;
     }
   }
 
