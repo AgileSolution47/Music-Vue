@@ -16,6 +16,7 @@
           title="Liked"
           :subtitle="likedSubtitle"
           :image="likedImage"
+          @left-click="$router.push({ name: '\\liked-page' })"
           @right-click="openContextMenu($event, -1, false)"
         />
         <cover-image

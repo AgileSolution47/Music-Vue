@@ -8,7 +8,7 @@
           <h3>{{ pageTitle }}</h3>
         </div>
         <div>
-          <search-bar placeholder="Download" />
+          <search-bar placeholder="Download" @search="handleSearch" />
         </div>
       </header>
       <div>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { debounce } from 'lodash';
 import SideBar from './components/SideBar';
 import SearchBar from './components/shared/SearchBar';
 
@@ -34,6 +35,7 @@ const paths = {
   '/artists/artist': [0, 4, 1],
   '/artists': [0, 4, 0],
   '/settings': [0, 5, 0],
+  '/search': [1, 0, 0],
 };
 
 export default {
@@ -75,6 +77,13 @@ export default {
 
       return transitionName;
     },
+    search: debounce(function(query) {
+      this.$store.dispatch('searchResults/search', query);
+    }),
+    handleSearch(query) {
+      if (this.$route.name !== 'Download') this.$router.push('/search');
+      this.search(query);
+    },
   },
   computed: {
     pageTitle() {
@@ -93,6 +102,7 @@ export default {
       this.headerOpacity = to.name[0] === '\\' ? 0 : 1;
       this.titleOpacity = 0;
       console.log(this.headerOpacity);
+      if (to.name === 'Download') this.$store.commit('searchResults/clear');
       setTimeout(() => {
         const [prevScreen, nextScreen] = document.querySelectorAll('#scroll-el');
         prevScreen.removeEventListener('scroll', this.onScroll);

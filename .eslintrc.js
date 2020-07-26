@@ -32,5 +32,6 @@ module.exports = {
     'comma-dangle': 0,
     'arrow-parens': 0,
     'no-mixed-operators': ['error', { allowSamePrecedence: true }],
+    'space-before-function-paren': 0,
   },
 };

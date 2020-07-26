@@ -8,6 +8,7 @@ import ArtistsPage from '@/components/ArtistsPage';
 import HomePage from '@/components/HomePage';
 import LikedPage from '@/components/LikedPage';
 import MusicPage from '@/components/MusicPage';
+import SearchPage from '@/components/SearchPage';
 import SettingsPage from '@/components/SettingsPage';
 
 Vue.use(Router);
@@ -71,6 +72,11 @@ export default new Router({
       path: '/music',
       name: 'My Music',
       component: MusicPage,
+    },
+    {
+      path: '/search',
+      name: 'Download',
+      component: SearchPage,
     },
     {
       path: '/settings',
