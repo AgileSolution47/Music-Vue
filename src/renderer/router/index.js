@@ -15,17 +15,17 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home-page',
+      name: 'Home',
       component: HomePage,
     },
     {
       path: '/music',
-      name: 'music-page',
+      name: 'My Music',
       component: MusicPage,
     },
     {
       path: '/albums/album',
-      name: 'album-page',
+      name: '\\album-page',
       component: AlbumPage,
       props: options => {
         const album = {
@@ -50,17 +50,17 @@ export default new Router({
     },
     {
       path: '/albums',
-      name: 'albums-page',
+      name: 'Albums',
       component: AlbumsPage,
     },
     {
       path: '/artists',
-      name: 'artists-page',
+      name: 'Artists',
       component: ArtistsPage,
     },
     {
       path: '/artists/artist',
-      name: 'artist-page',
+      name: '\\artist-page',
       component: ArtistPage,
       props: options => ({
         artist: options.query,
@@ -68,7 +68,7 @@ export default new Router({
     },
     {
       path: '/settings',
-      name: 'settings-page',
+      name: 'Settings',
       component: SettingsPage,
     },
     {

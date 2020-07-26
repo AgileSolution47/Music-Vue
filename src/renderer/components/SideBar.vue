@@ -81,7 +81,7 @@ export default {
   transition: width 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
   width: 4rem;
   height: 100vh;
-  // position: fixed;
+  z-index: 2;
   background: $secondary;
   overflow: hidden;
 

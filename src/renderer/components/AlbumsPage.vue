@@ -24,7 +24,7 @@
           :title="album.name"
           :subtitle="customAlbumSubtitles[index]"
           :image="musicSymbol"
-          @left-click="$router.push({ name: 'album-page', query: album })"
+          @left-click="$router.push({ name: '\\album-page', query: album })"
           @right-click="openContextMenu($event, index, true)"
         />
         <button class="plus" title="Add Custom Album">
@@ -39,7 +39,7 @@
           :title="album.name"
           :subtitle="albumSubtitles[index]"
           :image="album.imagePath"
-          @left-click="$router.push({ name: 'album-page', query: album })"
+          @left-click="$router.push({ name: '\\album-page', query: album })"
           @right-click="openContextMenu($event, index, false)"
         />
       </ul>

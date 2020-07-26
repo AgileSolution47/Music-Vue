@@ -2,7 +2,15 @@
   <div id="app">
     <main>
       <side-bar />
-
+      <header :style="{ opacity: headerOpacity }">
+        <div></div>
+        <div :style="{ opacity: titleOpacity }">
+          <h3>{{ pageTitle }}</h3>
+        </div>
+        <div>
+          <search-bar placeholder="Download" />
+        </div>
+      </header>
       <div>
         <transition :name="transitionName">
           <router-view></router-view>
@@ -14,6 +22,7 @@
 
 <script>
 import SideBar from './components/SideBar';
+import SearchBar from './components/shared/SearchBar';
 
 const paths = {
   '/': [0, 0, 0],
@@ -31,12 +40,19 @@ export default {
   name: 'Music',
   data: () => ({
     transitionName: '',
+    titleOpacity: 0,
+    headerOpacity: 1,
   }),
   mounted() {
     this.$store.dispatch('settings/load');
     window.store = this.$store;
+    document.getElementById('scroll-el').addEventListener('scroll', this.onScroll);
   },
   methods: {
+    onScroll(event) {
+      const opacity = event.target.scrollTop > 80 ? 1 : 0;
+      if (opacity !== this.titleOpacity) this.titleOpacity = opacity;
+    },
     getTransitionName(to, from) {
       let transitionName = 'page-transition';
 
@@ -60,12 +76,28 @@ export default {
       return transitionName;
     },
   },
+  computed: {
+    pageTitle() {
+      const temp = this.$route.name[0] === '\\' ? '' : this.$route.name;
+      console.log(temp);
+      return temp;
+    },
+  },
   components: {
     SideBar,
+    SearchBar,
   },
   watch: {
     $route(to, from) {
       this.transitionName = this.getTransitionName(to, from);
+      this.headerOpacity = to.name[0] === '\\' ? 0 : 1;
+      this.titleOpacity = 0;
+      console.log(this.headerOpacity);
+      setTimeout(() => {
+        const [prevScreen, nextScreen] = document.querySelectorAll('#scroll-el');
+        prevScreen.removeEventListener('scroll', this.onScroll);
+        nextScreen.addEventListener('scroll', this.onScroll);
+      }, 100);
     },
   },
 };
@@ -82,6 +114,41 @@ main {
   > div {
     flex: 1;
   }
+}
+
+header {
+  @include flex-box(space-between);
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: calc(100vw - 0.8rem);
+  height: 4.5rem;
+  backdrop-filter: blur(20px);
+  z-index: 1;
+  transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  padding-right: calc(5vw + 1.3rem);
+  padding-left: calc(5vw + 2.1rem);
+
+  > div {
+    @include flex-box;
+
+    transition: 0.2s;
+    flex: 1;
+
+    &:nth-child(3) {
+      justify-content: flex-end;
+    }
+  }
+
+  h3 {
+    font-size: 1.4rem;
+  }
+}
+
+.sidebar:hover + header {
+  padding-right: calc(5vw + 1.3rem - 10px);
+  padding-left: calc(5vw + 2.1rem - 10px);
 }
 </style>
 

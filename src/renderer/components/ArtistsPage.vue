@@ -16,7 +16,7 @@
           :title="artist.name"
           :subtitle="subtitles[index]"
           :images="artist.images"
-          @left-click="$router.push({ name: 'artist-page', query: artist })"
+          @left-click="$router.push({ name: '\\artist-page', query: artist })"
           @right-click="openContextMenu($event, index)"
         />
       </ul>

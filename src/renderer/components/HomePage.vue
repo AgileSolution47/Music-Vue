@@ -23,7 +23,7 @@
             :subtitle="albumSubtitles[index]"
             :image="album.imagePath"
             @right-click="openContextMenu($event, index, false)"
-            @left-click="$router.push({ name: 'album-page', query: album })"
+            @left-click="$router.push({ name: '\\album-page', query: album })"
           />
         </transition-group>
         <h1 class="header">Top Songs</h1>

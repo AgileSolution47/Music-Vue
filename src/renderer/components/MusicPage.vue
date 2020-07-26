@@ -11,10 +11,10 @@
         @toggleLike="toggleLike"
         @delete="deleteSong"
       />
-      <header>
+      <div class="top">
         <h1 class="header">My Music</h1>
         <search-bar v-if="allSongs !== null" placeholder="Filter" @search="searchQuery = $event" />
-      </header>
+      </div>
       <div class="button-bar">
         <button class="btn">Play All</button>
         <button class="btn">Play Random</button>
@@ -157,7 +157,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/vars.scss';
 
-header {
+.top {
   @include flex-box(space-between);
   margin-bottom: 0.5rem;
 }
