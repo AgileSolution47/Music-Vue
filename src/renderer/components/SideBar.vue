@@ -62,19 +62,39 @@
         </div>
       </component>
     </div>
-    <component
-      :is="disabled ? 'span' : 'router-link'"
-      to="/settings"
-      active-class="sel"
-      class="item"
-    >
-      <div class="first">
-        <cog-icon title="Settings" />
+    <div>
+      <div v-for="{ text, progress } in progress" class="item" :title="text" :key="text">
+        <div class="first">
+          <vue-ellipse-progress
+            :progress="progress"
+            color="#1763d4"
+            empty-color="#323232"
+            :size="34"
+            :thickness="4"
+            :empty-thickness="4"
+            animation="bounce 700 1000"
+            fontSize="0.7rem"
+            font-color="white"
+          />
+        </div>
+        <div class="second">
+          <p class="one-line">{{ text }}</p>
+        </div>
       </div>
-      <div class="second">
-        <h6>Settings</h6>
-      </div>
-    </component>
+      <component
+        :is="disabled ? 'span' : 'router-link'"
+        to="/settings"
+        active-class="sel"
+        class="item"
+      >
+        <div class="first">
+          <cog-icon title="Settings" />
+        </div>
+        <div class="second">
+          <h6>Settings</h6>
+        </div>
+      </component>
+    </div>
   </nav>
 </template>
 
@@ -85,9 +105,15 @@ import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple';
 import HomeIcon from 'vue-material-design-icons/Home';
 import CogIcon from 'vue-material-design-icons/Cog';
 import { mapGetters } from 'vuex';
+import { ipcRenderer } from 'electron';
 
 export default {
   name: 'side-bar',
+  data() {
+    return {
+      progress: [],
+    };
+  },
   computed: {
     disabled() {
       return !this.apiKeysValid;
@@ -102,6 +128,31 @@ export default {
     AccountMultipleIcon,
     HomeIcon,
     CogIcon,
+  },
+  mounted() {
+    ipcRenderer.on('download:progress', (_, { artist, title, percent }) => {
+      const text = `${title} by ${artist}`;
+      const index = this.progress.findIndex(item => item.text === text);
+      percent *= 100;
+
+      const item = {
+        text,
+        progress: percent > 100 ? 100 : Math.round(percent),
+      };
+
+      if (index >= 0) {
+        this.progress.splice(index, 1, item);
+      } else {
+        this.progress.push(item);
+      }
+    });
+
+    ipcRenderer.on('download:complete', (_, { artist, title }) => {
+      const text = `${title} by ${artist}`;
+      const index = this.progress.findIndex(item => item.text === text);
+
+      this.progress.splice(index, 1);
+    });
   },
 };
 </script>
@@ -195,6 +246,12 @@ export default {
       transform: translateX(0);
     }
   }
+}
+
+.one-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 @media screen and (min-width: 1400px) {

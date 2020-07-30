@@ -33,5 +33,7 @@ module.exports = {
     'arrow-parens': 0,
     'no-mixed-operators': ['error', { allowSamePrecedence: true }],
     'space-before-function-paren': 0,
+    'class-methods-use-this': 0,
+    'no-mixed-operators': 0,
   },
 };

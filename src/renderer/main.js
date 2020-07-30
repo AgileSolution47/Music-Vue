@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import axios from 'axios';
+import VueEllipseProgress from 'vue-ellipse-progress';
 
 import App from './App';
 import router from './router';
 import store from './store';
 import DatabaseFunctions from './helpers/database_functions';
+
+Vue.use(VueEllipseProgress);
 
 if (!process.env.IS_WEB) {
   Vue.use(require('vue-electron'));
@@ -17,5 +20,5 @@ new Vue({
   components: { App },
   router,
   store,
-  template: '<App/>',
+  template: '<App />',
 }).$mount('#app');

@@ -60,9 +60,9 @@ export default {
 
 .title {
   font-size: 1rem;
-  white-space: nowrap;
   max-width: 10rem;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 

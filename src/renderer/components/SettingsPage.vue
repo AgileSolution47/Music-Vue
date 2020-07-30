@@ -44,7 +44,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 
 import ToggleButton from './SettingsPage/ToggleButton';
@@ -80,12 +80,13 @@ export default {
       const prevPath = this.folderStored;
 
       const { canceled, filePaths } = await remote.dialog.showOpenDialog(win, {
-        properties: ['openDirectory'],
+        properties: ['openDirectory', 'createDirectory'],
         title: 'Choose Music Directory',
         defaultPath: path.join(prevPath, '..'),
       });
 
       if (!canceled && prevPath !== filePaths[0]) {
+        ipcRenderer.emit('download:update-base-path', filePaths[0]);
         this.$store.commit('settings/setFolderStored', filePaths[0]);
       }
     },

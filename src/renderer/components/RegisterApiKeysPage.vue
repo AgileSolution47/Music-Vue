@@ -217,6 +217,11 @@ h4 {
   @include flex-box;
 
   margin: 3rem auto;
+  padding: 0;
   width: 16ch;
+
+  .material-design-icon {
+    margin-right: 0.5ch;
+  }
 }
 </style>

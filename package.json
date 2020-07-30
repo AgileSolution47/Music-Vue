@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "author": "Lutetium-Vanadium <luv.s7000@gmail.com>",
   "description": "A music app built with electron.",
-  "license": "MIT",
+  "license": "GPL-2.0-only",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -55,15 +55,19 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "fluent-ffmpeg": "^2.1.2",
     "lodash": "^4.17.19",
     "sqlite": "^4.0.11",
     "sqlite3": "^5.0.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
+    "vue-ellipse-progress": "^1.1.1",
     "vue-material-design-icons": "^4.7.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "vuex-electron": "^1.0.0"
+    "vuex-electron": "^1.0.0",
+    "ytdl-core": "^3.2.0",
+    "ytsr": "^0.1.20"
   },
   "devDependencies": {
     "ajv": "^6.5.0",
