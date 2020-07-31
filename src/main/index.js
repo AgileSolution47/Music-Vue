@@ -57,7 +57,14 @@ app.on('activate', () => {
 
 ipcMain.handle('download:image', (_, albumId) => downloadImage(albumId));
 
-ipcMain.handle('download:song', (_, song) => downloader.download(song.title, song.artist));
+ipcMain.handle('download:song', async (_, song) => {
+  const details = await downloader.download(song.title, song.artist, song.albumId);
+  await details.download;
+
+  delete details.download;
+
+  return details;
+});
 
 ipcMain.on('download:init', (_, path) => {
   downloader = new YtDownloader(path);
@@ -70,30 +77,6 @@ ipcMain.on('download:init', (_, path) => {
 ipcMain.on('download:update-base-path', (_, path) => {
   downloader.updateBasePath(path);
 });
-
-console.log('test');
-
-/* eslint-disable */
-ipcMain.on('test', async (_, title) => {
-  let percent = 0;
-  await sleep(700 + Math.random() * 100);
-  while (percent < 1) {
-    percent += Math.random() / 10;
-    mainWindow.webContents.send('download:progress', {
-      title,
-      artist: 'Queen',
-      percent,
-    });
-    await sleep(700 + Math.random() * 100);
-  }
-
-  mainWindow.webContents.send('download:complete', {
-    title,
-    artist: 'Queen',
-  });
-});
-
-const sleep = async time => new Promise(res => setTimeout(res, time));
 
 /**
  * Auto Updater

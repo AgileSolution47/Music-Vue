@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
@@ -64,6 +64,7 @@ const actions = {
   async load({ commit }) {
     const buffer = await fs.promises.readFile(configPath);
     const settings = JSON.parse(buffer.toString());
+    ipcRenderer.send('download:init', settings.folderStored);
     commit('load', settings);
   },
   async updateChanges({ commit, state }) {

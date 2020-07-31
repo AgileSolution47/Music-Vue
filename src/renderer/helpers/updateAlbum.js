@@ -1,6 +1,8 @@
-import { app, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import path from 'path';
 import axios from 'axios';
+
+const { app } = remote;
 
 const getAlbumInfo = async albumId => {
   try {
@@ -12,26 +14,27 @@ const getAlbumInfo = async albumId => {
 
     if (response.status !== 200) throw response.headers.status;
 
-    const { id, name } = response.data.albums[0];
+    const { id, name, artistName: artist } = response.data.albums[0];
 
-    return { id, name };
+    return { id, name, artist };
   } catch (error) {
     console.error(error);
     return {
       id: '',
       name: '',
+      artist: '',
     };
   }
 };
 
-const updateAlbum = async (albumId, artist) => {
+const updateAlbum = async albumId => {
   const imagePath = `file://${path.join(
     app.getPath('userData'),
     'album_images',
     `${albumId}.jpg`
   )}`;
 
-  let numSongs = await window.db.getNumSong(albumId);
+  let numSongs = await window.db.getNumSongs(albumId);
 
   if (numSongs++ > 0) {
     await window.db.updateAlbum({
@@ -42,9 +45,7 @@ const updateAlbum = async (albumId, artist) => {
     return;
   }
 
-  await ipcRenderer.invoke('download:image', albumId);
-
-  const { id, name } = await getAlbumInfo(albumId);
+  const { id, name, artist } = await getAlbumInfo(albumId);
 
   if (albumId !== id) {
     throw new Error(`Failed album ${albumId}`);

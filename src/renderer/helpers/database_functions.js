@@ -180,16 +180,15 @@ class DatabaseFunctions {
     return artists;
   }
 
-  async insert(table, values) {
+  async insert(table, data) {
     await this.isReady();
 
-    const keys = `(${Object.keys(values).join(',')})`;
-    const questionMarks = `(${new Array(keys.length).fill('?').join(',')})`;
+    const values = Object.values(data);
 
-    return this._db.exec(
-      `INSERT INTO ${table} ${keys} VALUES ${questionMarks}`,
-      ...Object.values(values)
-    );
+    const keys = `(${Object.keys(data).join(',')})`;
+    const questionMarks = `(${new Array(values.length).fill('?').join(',')})`;
+
+    return this._db.exec(`INSERT INTO ${table} ${keys} VALUES ${questionMarks}`, ...values);
   }
 
   async insertSong(song) {

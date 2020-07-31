@@ -121,11 +121,19 @@ export default {
       this.posx = -200;
       this.posy = -200;
     },
+    fetchData() {
+      window.db.getSongs().then(songs => {
+        this.allSongs = songs.length ? songs : null;
+      });
+    },
+  },
+  watch: {
+    '$store.state.data._updater': function () {
+      this.fetchData();
+    },
   },
   beforeMount() {
-    window.db.getSongs().then(songs => {
-      this.allSongs = songs.length ? songs : null;
-    });
+    this.fetchData();
   },
   computed: {
     songs() {

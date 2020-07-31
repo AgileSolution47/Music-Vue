@@ -75,11 +75,19 @@ export default {
       this.posx = -200;
       this.posy = -200;
     },
+    fetchData() {
+      window.db.getArtists().then(artists => {
+        this.artists = artists;
+      });
+    },
+  },
+  watch: {
+    '$store.state.data._updater': function () {
+      this.fetchData();
+    },
   },
   beforeMount() {
-    window.db.getArtists().then(artists => {
-      this.artists = artists;
-    });
+    this.fetchData();
   },
   components: {
     CoverImage,

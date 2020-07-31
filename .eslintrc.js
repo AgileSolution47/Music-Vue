@@ -35,5 +35,7 @@ module.exports = {
     'space-before-function-paren': 0,
     'class-methods-use-this': 0,
     'no-mixed-operators': 0,
+    'no-new': 0,
+    'object-curly-newline': 0,
   },
 };

@@ -100,7 +100,7 @@ export class YtDownloader {
     }));
   }
 
-  async downloadWithData(ytData, path, notifyProgress = true) {
+  async downloadWithData(ytData, albumId, path, notifyProgress = true) {
     let url = null;
 
     let i = 0;
@@ -115,13 +115,15 @@ export class YtDownloader {
 
     return {
       ...data,
+      albumId,
+      path,
       download: new Promise((res, rej) => {
         ffmpeg(url)
           .noVideo()
           .audioCodec('libmp3lame')
           .saveToFile(path)
-          .on('error', rej)
           .on('end', res)
+          .on('error', rej)
           .on('progress', progress => {
             if (notifyProgress && this._progressHandler) {
               const timestamp = this._parseDur(progress.timemark);
@@ -130,6 +132,7 @@ export class YtDownloader {
                 timestamp,
                 total: data.duration,
                 percent: timestamp / data.duration,
+                albumId,
                 title: data.title,
                 artist: data.artist,
               });
@@ -139,8 +142,13 @@ export class YtDownloader {
     };
   }
 
-  async download(title, artist, notifyProgress = true) {
+  async download(title, artist, albumId, notifyProgress = true) {
     const ytData = await this.getYoutubeData(title, artist);
-    return this.downloadWithData(ytData, path.join(this.basePath, `${title}.mp3`), notifyProgress);
+    return this.downloadWithData(
+      ytData,
+      albumId,
+      path.join(this.basePath, `${title}.mp3`),
+      notifyProgress
+    );
   }
 }

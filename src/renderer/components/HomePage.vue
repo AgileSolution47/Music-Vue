@@ -166,12 +166,20 @@ export default {
       this.posx = -200;
       this.posy = -200;
     },
+    fetchData() {
+      window.db.getTop().then(({ songs, albums }) => {
+        this.topSongs = songs.length ? songs : null;
+        this.topAlbums = albums.length ? albums : null;
+      });
+    },
+  },
+  watch: {
+    '$store.state.data._updater': function () {
+      this.fetchData();
+    },
   },
   beforeMount() {
-    window.db.getTop().then(({ songs, albums }) => {
-      this.topSongs = songs.length ? songs : null;
-      this.topAlbums = albums.length ? albums : null;
-    });
+    this.fetchData();
   },
   components: {
     CoverImage,

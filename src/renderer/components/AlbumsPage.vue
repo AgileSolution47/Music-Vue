@@ -153,17 +153,25 @@ export default {
       this.posx = -200;
       this.posy = -200;
     },
+    fetchData() {
+      window.db.getNumLiked().then(numLiked => {
+        this.likedSubtitle = generateSubtitle({ type: 'Album', numSongs: numLiked });
+      });
+      window.db.getAlbums().then(albums => {
+        this.albums = albums;
+      });
+      window.db.getCustomAlbums().then(albums => {
+        this.customAlbums = albums;
+      });
+    },
+  },
+  watch: {
+    '$store.state.data._updater': function () {
+      this.fetchData();
+    },
   },
   beforeMount() {
-    window.db.getNumLiked().then(numLiked => {
-      this.likedSubtitle = generateSubtitle({ type: 'Album', numSongs: numLiked });
-    });
-    window.db.getAlbums().then(albums => {
-      this.albums = albums;
-    });
-    window.db.getCustomAlbums().then(albums => {
-      this.customAlbums = albums;
-    });
+    this.fetchData();
   },
   components: {
     PlusIcon,

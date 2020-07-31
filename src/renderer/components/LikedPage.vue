@@ -24,10 +24,20 @@ export default {
       });
     },
   },
+  methods: {
+    fetchData() {
+      window.db.getSongs('liked').then(songs => {
+        this.songs = songs;
+      });
+    },
+  },
+  watch: {
+    '$store.state.data._updater': function () {
+      this.fetchData();
+    },
+  },
   beforeMount() {
-    window.db.getSongs('liked').then(songs => {
-      this.songs = songs;
-    });
+    this.fetchData();
   },
   components: {
     SongPage,
