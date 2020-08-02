@@ -23,15 +23,16 @@ const mutations: MutationTree<QueueState> = {
   enqueue(state, { songs, shuffle }: EnqueueEvent) {
     shuffle = shuffle ?? false;
 
-    state.index = 0;
-    state.shuffle = shuffle;
-    state.allSongs = [...songs];
+    console.log({ songs, shuffle });
+    // state.index = 0;
+    // state.shuffle = shuffle;
+    // state.allSongs = [...songs];
 
-    if (shuffle) {
-      state.queue = shuffleArray([...songs], 0);
-    } else {
-      state.queue = [...songs];
-    }
+    // if (shuffle) {
+    //   state.queue = shuffleArray([...songs], 0);
+    // } else {
+    //   state.queue = [...songs];
+    // }
   },
   dequeue(state) {
     state.allSongs = [];
@@ -55,7 +56,7 @@ const mutations: MutationTree<QueueState> = {
 
     if (state.shuffle) {
       state.queue = shuffleArray([...state.allSongs], state.index);
-      state.index;
+      state.index = 0;
     } else {
       state.queue = [...state.allSongs];
     }
@@ -64,14 +65,14 @@ const mutations: MutationTree<QueueState> = {
     state.loop = !state.loop;
   },
   toggleLiked(state, song: SongData) {
-    var liked = !song.liked;
+    const liked = !song.liked;
 
-    var allSongsIndex = state.allSongs.findIndex(s => s.title === song.title);
+    const allSongsIndex = state.allSongs.findIndex(s => s.title === song.title);
     if (allSongsIndex >= 0) {
       state.allSongs[allSongsIndex].liked = liked;
     }
 
-    var songsIndex = state.queue.findIndex(s => s.title === song.title);
+    const songsIndex = state.queue.findIndex(s => s.title === song.title);
     if (songsIndex >= 0) {
       state.queue[songsIndex].liked = liked;
     }
@@ -111,6 +112,7 @@ const actions: ActionTree<QueueState, RootState> = {
     // await window.db.deleteEmptyAlbums();
 
     commit('removeSong', song);
+    commit('data/update', undefined, { root: true });
   },
   async toggleLiked({ commit }, song: SongData) {
     await window.db.update(
@@ -121,6 +123,7 @@ const actions: ActionTree<QueueState, RootState> = {
     );
 
     commit('toggleLike', song);
+    commit('data/update', undefined, { root: true });
   },
 };
 

@@ -6,7 +6,7 @@
         :posx="posx"
         :posy="posy"
         @reset="reset"
-        @play="playSong"
+        @play="playSong(index)"
         @addtoalbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
@@ -16,8 +16,8 @@
         <search-bar v-if="allSongs !== null" placeholder="Filter" @search="searchQuery = $event" />
       </div>
       <div class="button-bar">
-        <button class="btn">Play All</button>
-        <button class="btn">Play Random</button>
+        <button class="btn" @click.left="playSong(0)">Play All</button>
+        <button class="btn" @click.left="playSong(random(), true)">Play Random</button>
       </div>
       <p v-if="songs === null || songs.length === 0" class="nothing">No Songs</p>
       <template v-else>
@@ -36,10 +36,13 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
+
 import SongItem from './shared/SongItem.vue';
 import SearchBar from './shared/SearchBar.vue';
 import ContextMenu from './shared/ContextMenu.vue';
+import { displace } from '../helpers/displace';
 
 export default {
   name: 'music-page',
@@ -74,17 +77,15 @@ export default {
     index: -1,
   }),
   methods: {
-    playSong() {
+    ...mapMutations('queue', ['enqueue']),
+    playSong(index, shuffle = false) {
       if (this.songs === null) throw new Error('No Songs');
-      console.log('PLAY', {
-        index: this.index,
-        song: this.songs[this.index],
-      });
+      this.enqueue({ songs: displace(this.songs, index), shuffle });
       this.reset();
     },
     addToAlbum() {
       if (this.songs === null) throw new Error('No Songs');
-      console.log('ADD', {
+      console.log('TODO ADD TO ALBUM', {
         index: this.index,
         song: this.songs[this.index],
       });
@@ -92,18 +93,12 @@ export default {
     },
     toggleLike() {
       if (this.songs === null) throw new Error('No Songs');
-      console.log({
-        index: this.index,
-        liked: this.songs[this.index].liked,
-      });
+      this.$store.dispatch('queue/toggleLike', this.songs[this.index]);
       this.reset();
     },
     deleteSong() {
       if (this.songs === null) throw new Error('No Songs');
-      console.log('DELETE', {
-        index: this.index,
-        song: this.songs[this.index],
-      });
+      this.$store.dispatch('queue/deleteSong', this.songs[this.index]);
       this.reset();
     },
     openContextMenu(event, index) {
@@ -131,9 +126,13 @@ export default {
         this.allSongs = songs.length ? songs : null;
       });
     },
+    random() {
+      if (this.songs) return Math.floor(Math.random() * this.songs.length);
+      return -1;
+    },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },

@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import PlusIcon from 'vue-material-design-icons/Plus.vue';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
@@ -57,6 +58,7 @@ import likedImage from '@/assets/liked.png';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
+import { stringifyArr } from '../helpers/database_functions';
 
 export default {
   name: 'albums-page',
@@ -110,29 +112,26 @@ export default {
     },
   },
   methods: {
-    playAlbum() {
+    ...mapMutations('queue', ['enqueue']),
+    async playAlbum() {
       if (this.index === -1) {
-        console.log('PLAY LIKED: ', this.likedSubtitle);
+        const songs = await window.db.getSongs('liked');
+        this.enqueue({ songs });
       } else {
-        console.log('PLAY ALBUM', {
-          index: this.index,
-          album: this.albums[this.index],
-        });
+        const songs = await window.db.getSongs('albumId LIKE ?', [this.albums[this.index].id]);
+        this.enqueue({ songs });
       }
       this.reset();
     },
-    playCustomAlbum() {
-      console.log('PLAY CUSTOM ALBUM', {
-        index: this.index,
-        album: this.customAlbums[this.index],
-      });
+    async playCustomAlbum() {
+      const songs = await window.db.getSongs(
+        `title IN (${stringifyArr(this.customAlbums[this.index].songs)})`
+      );
+      this.enqueue({ songs });
       this.reset();
     },
     deleteCustomAlbum() {
-      console.log('DELETE CUSTOM ALBUM', {
-        index: this.index,
-        album: this.customAlbums[this.index],
-      });
+      window.db.deleteCustomAlbum(this.customAlbums[this.index].id);
       this.reset();
     },
     openContextMenu(event, index, deletable) {
@@ -168,7 +167,7 @@ export default {
     },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },

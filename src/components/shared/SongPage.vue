@@ -6,7 +6,7 @@
         :posx="posx"
         :posy="posy"
         @reset="reset"
-        @play="playSong"
+        @play="playSong(index)"
         @addtoalbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
@@ -26,7 +26,7 @@
           :key="song.title"
           :song="song"
           @right-click="openContextMenu($event, index)"
-          @left-click="playSongIndex(index)"
+          @left-click="playSong(index)"
         >
           <dots-horizontal-icon title="Options" @click.stop="openContextMenu($event, index)" />
         </song-item>
@@ -36,7 +36,10 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
+
+import { displace } from '@/helpers/displace';
 
 import SongItem from './SongItem.vue';
 import MozaicImage from './MozaicImage.vue';
@@ -87,35 +90,24 @@ export default {
     },
   },
   methods: {
-    playSongIndex(index) {
-      console.log('PLAY', {
-        index,
-        song: this.songs[index],
-      });
-    },
-    playSong() {
-      this.playSongIndex(this.index);
+    ...mapMutations('queue', ['enqueue']),
+    playSong(index) {
+      this.enqueue({ songs: displace(this.songs, index) });
       this.reset();
     },
     addToAlbum() {
-      console.log('ADD', {
+      console.log('TODO ADD TO ALBUM', {
         index: this.index,
         song: this.songs[this.index],
       });
       this.reset();
     },
     toggleLike() {
-      console.log({
-        index: this.index,
-        liked: this.songs[this.index].liked,
-      });
+      this.$store.dispatch('queue/toggleLike', this.songs[this.index]);
       this.reset();
     },
     deleteSong() {
-      console.log('DELETE', {
-        index: this.index,
-        song: this.songs[this.index],
-      });
+      this.$store.dispatch('queue/deleteSong', this.songs[this.index]);
       this.reset();
     },
     openContextMenu(event, index) {

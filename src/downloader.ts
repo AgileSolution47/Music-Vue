@@ -42,6 +42,7 @@ interface YtData {
 
 export class YtDownloader {
   _progressHandler: ProgressHandler | null = null;
+
   basePath: string;
 
   constructor(basePath: string) {

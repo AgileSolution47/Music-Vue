@@ -7,7 +7,7 @@
         :posy="posy"
         @reset="reset"
         @playAlbum="playAlbum"
-        @play="playSong"
+        @play="playSong(index)"
         @addtoalbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
@@ -44,7 +44,10 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 import generateSubtitle from '@/helpers/generateSubtitle';
+// import { displace } from '@/helpers/displace';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
@@ -110,25 +113,23 @@ export default {
     },
   },
   methods: {
-    playAlbum() {
+    ...mapMutations('queue', ['enqueue']),
+    async playAlbum() {
       if (this.topAlbums === null) throw new Error('No Albums');
-      console.log('PLAY ALBUM', {
-        index: this.index,
-        album: this.topAlbums[this.index],
-      });
+      const songs = await window.db.getSongs('albumId LIKE ?', [this.topAlbums[this.index].id]);
+      this.enqueue({ songs });
       this.reset();
     },
-    playSong() {
+    async playSong(index) {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log('PLAY', {
-        index: this.index,
-        song: this.topSongs[this.index],
-      });
+      console.log('PLAY SONG', index);
+      // const songs = await window.db.getTopSongs();
+      // this.enqueue({ song: displace(songs, index) });
       this.reset();
     },
     addToAlbum() {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log('ADD', {
+      console.log('TODO ADD TO ALBUM', {
         index: this.index,
         song: this.topSongs[this.index],
       });
@@ -136,18 +137,12 @@ export default {
     },
     toggleLike() {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log({
-        index: this.index,
-        liked: this.topSongs[this.index].liked,
-      });
+      this.$store.dispatch('queue/toggleLike', this.topSongs[this.index]);
       this.reset();
     },
     deleteSong() {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log('DELETE', {
-        index: this.index,
-        song: this.topSongs[this.index],
-      });
+      this.$store.dispatch('queue/deleteSong', this.topSongs[this.index]);
       this.reset();
     },
     openContextMenu(event, index, isSong) {
@@ -184,7 +179,7 @@ export default {
     },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },

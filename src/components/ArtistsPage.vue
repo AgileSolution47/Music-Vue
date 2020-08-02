@@ -56,11 +56,9 @@ export default {
     },
   },
   methods: {
-    playArtist() {
-      console.log('PLAY ARTIST', {
-        index: this.index,
-        artist: this.artists[this.index],
-      });
+    async playArtist() {
+      const songs = await window.db.getSongs('artist LIKE ?', [this.artists[this.index].name]);
+      this.$store.commit('queue/enqueue', { songs });
       this.reset();
     },
     openContextMenu(event, index) {
@@ -84,7 +82,7 @@ export default {
     },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },
