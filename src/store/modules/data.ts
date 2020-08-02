@@ -1,5 +1,5 @@
 import { ipcRenderer, remote } from 'electron';
-import { ActionContext } from 'vuex';
+import { ActionTree, MutationTree } from 'vuex';
 import path from 'path';
 
 import logo from '@/assets/logo.png';
@@ -14,17 +14,14 @@ const state: DataState = {
   updater: false,
 };
 
-const mutations = {
-  update(state: DataState) {
+const mutations: MutationTree<DataState> = {
+  update(state) {
     state.updater = !state.updater;
   },
 };
 
-const actions = {
-  async downloadSong(
-    { rootState, commit }: ActionContext<DataState, RootState>,
-    napsterSong: NapsterSongData
-  ) {
+const actions: ActionTree<DataState, RootState> = {
+  async downloadSong({ rootState, commit }, napsterSong: NapsterSongData) {
     try {
       console.log('Downloading', napsterSong.title);
 

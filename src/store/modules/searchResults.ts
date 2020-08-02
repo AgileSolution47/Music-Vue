@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ActionContext } from 'vuex';
+import { MutationTree, ActionTree } from 'vuex';
 
 import { SearchResultsState, RootState } from '../types';
 
@@ -8,21 +8,21 @@ const state: SearchResultsState = {
   error: null,
 };
 
-const mutations = {
-  setResults(state: SearchResultsState, results: NapsterSongData[]) {
+const mutations: MutationTree<SearchResultsState> = {
+  setResults(state, results: NapsterSongData[]) {
     state.results = results;
   },
-  setError(state: SearchResultsState, error: any) {
+  setError(state, error: any) {
     state.error = error;
   },
-  clear(state: SearchResultsState) {
+  clear(state) {
     state.results = [];
     state.error = null;
   },
 };
 
-const actions = {
-  async search({ commit, rootState }: ActionContext<SearchResultsState, RootState>, query: string) {
+const actions: ActionTree<SearchResultsState, RootState> = {
+  async search({ commit, rootState }, query: string) {
     if (query.trim().length === 0) return;
     try {
       const response = await axios.get('https://api.napster.com/v2.2/search', {

@@ -3,17 +3,17 @@ import sqlite3 from 'sqlite3';
 import * as path from 'path';
 import { open, Database } from 'sqlite';
 
-const Tables = {
-  Songs: 'songdata',
-  Albums: 'albumdata',
-  CustomAlbums: 'customalbums',
-};
+export enum Tables {
+  Songs = 'songdata',
+  Albums = 'albumdata',
+  CustomAlbums = 'customalbums',
+}
 
 const { app } = remote;
 
-const stringifyArr = (arr: any[]) => JSON.stringify(arr).slice(1, -1);
+export const stringifyArr = (arr: any[]) => JSON.stringify(arr).slice(1, -1);
 
-const parseArr = (arr: string) => JSON.parse(`[${arr}]`);
+export const parseArr = (arr: string) => JSON.parse(`[${arr}]`);
 
 type Count = { cnt: number };
 
@@ -198,7 +198,7 @@ class DatabaseFunctions {
     return artists;
   }
 
-  async insert(table: string, data: obj) {
+  async insert(table: Tables, data: obj) {
     await this.isReady();
 
     const values = Object.values(data);
@@ -224,7 +224,7 @@ class DatabaseFunctions {
     });
   }
 
-  async delete(table: string, where?: string, whereArgs: any[] = []) {
+  async delete(table: Tables, where?: string, whereArgs: any[] = []) {
     await this.isReady();
 
     return (
@@ -256,7 +256,7 @@ class DatabaseFunctions {
     return this.delete(Tables.CustomAlbums, 'id LIKE ?', [id]);
   }
 
-  async update(table: string, values: obj, where?: string, whereArgs: any[] = []) {
+  async update(table: Tables, values: obj, where?: string, whereArgs: any[] = []) {
     await this.isReady();
 
     const keys = `${Object.keys(values).join(' = ?,')} = ?`;

@@ -1,5 +1,5 @@
 import { remote, ipcRenderer } from 'electron';
-import { ActionContext } from 'vuex';
+import { MutationTree, ActionTree } from 'vuex';
 import path from 'path';
 import fs from 'fs';
 
@@ -21,8 +21,8 @@ const configPath = path.join(remote.app.getPath('userData'), 'config.json');
 const updateFile = (settings: SettingsState) =>
   fs.promises.writeFile(configPath, JSON.stringify(settings));
 
-const mutations = {
-  load(state: SettingsState, settings: SettingsState) {
+const mutations: MutationTree<SettingsState> = {
+  load(state, settings: SettingsState) {
     state.animations = settings.animations;
     state.controlWindow = settings.controlWindow;
     state.folderStored = settings.folderStored;
@@ -31,47 +31,47 @@ const mutations = {
     state.seekAhead = settings.seekAhead;
     state.seekBack = settings.seekBack;
   },
-  toggleAnimations(state: SettingsState) {
+  toggleAnimations(state) {
     state.animations = !state.animations;
     updateFile(state);
   },
-  toggleControlWindow(state: SettingsState) {
+  toggleControlWindow(state) {
     state.controlWindow = !state.controlWindow;
     updateFile(state);
   },
-  changeJumpBack(state: SettingsState, delta: number) {
+  changeJumpBack(state, delta: number) {
     state.jumpBack += delta;
     state.hasChanges = true;
   },
-  changeSeekBack(state: SettingsState, delta: number) {
+  changeSeekBack(state, delta: number) {
     state.seekBack += delta;
     state.hasChanges = true;
   },
-  changeSeekAhead(state: SettingsState, delta: number) {
+  changeSeekAhead(state, delta: number) {
     state.seekAhead += delta;
     state.hasChanges = true;
   },
-  changeJumpAhead(state: SettingsState, delta: number) {
+  changeJumpAhead(state, delta: number) {
     state.jumpAhead += delta;
     state.hasChanges = true;
   },
-  finishChanges(state: SettingsState) {
+  finishChanges(state) {
     state.hasChanges = false;
   },
-  setFolderStored(state: SettingsState, folderStored: string) {
+  setFolderStored(state, folderStored: string) {
     state.folderStored = folderStored;
     updateFile(state);
   },
 };
 
-const actions = {
-  async load({ commit }: ActionContext<SettingsState, RootState>) {
+const actions: ActionTree<SettingsState, RootState> = {
+  async load({ commit }) {
     const buffer = await fs.promises.readFile(configPath);
     const settings = JSON.parse(buffer.toString());
     ipcRenderer.send('download:init', settings.folderStored);
     commit('load', settings);
   },
-  async updateChanges({ commit, state }: ActionContext<SettingsState, RootState>) {
+  async updateChanges({ commit, state }) {
     await updateFile(state);
     commit('finishChanges');
   },

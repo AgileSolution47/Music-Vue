@@ -31,3 +31,11 @@ export interface RootState {
   searchResults: SearchResultsState;
   settings: SettingsState;
 }
+
+export interface QueueState {
+  queue: SongData[];
+  allSongs: SongData[];
+  index: number;
+  shuffle: boolean;
+  loop: boolean;
+}

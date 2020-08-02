@@ -1,4 +1,6 @@
-import { ApiKeysState } from '../types';
+import { MutationTree, GetterTree } from 'vuex';
+
+import { ApiKeysState, RootState } from '../types';
 
 const state: ApiKeysState = {
   napster: null,
@@ -7,8 +9,8 @@ const state: ApiKeysState = {
   firestoreAppId: null,
 };
 
-const mutations = {
-  setKeys(state: ApiKeysState, keys: ApiKeysState) {
+const mutations: MutationTree<ApiKeysState> = {
+  setKeys(state, keys: ApiKeysState) {
     keys = {
       ...keys,
       firestoreApiKey: null,
@@ -23,15 +25,15 @@ const mutations = {
   },
 };
 
-const getters = {
-  valid(state: ApiKeysState) {
+const getters: GetterTree<ApiKeysState, RootState> = {
+  valid(state) {
     return state.napster !== null;
   },
-  syncable(state: ApiKeysState) {
+  syncable(state) {
     return (
-      state.firestoreApiKey !== null
-      && state.firestoreProjectId !== null
-      && state.firestoreAppId !== null
+      state.firestoreApiKey !== null &&
+      state.firestoreProjectId !== null &&
+      state.firestoreAppId !== null
     );
   },
 };
