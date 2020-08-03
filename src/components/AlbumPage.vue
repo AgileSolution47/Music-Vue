@@ -2,13 +2,33 @@
   <song-page :songs="songs" :image="image" :title="album.name" :subtext="subtext" />
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
 import musicSymbol from '@/assets/music_symbol.png';
 import generateSubtitle from '@/helpers/generateSubtitle';
 
 import SongPage from './shared/SongPage.vue';
 
-export default {
+interface CData {
+  songs: SongData[];
+}
+
+interface CMethods {
+  fetchData: () => void;
+}
+
+interface CComputed {
+  image: string;
+  subtext: string | null;
+}
+
+interface CProps {
+  album: AlbumData;
+  isCustom: boolean;
+}
+
+export default Vue.extend<CData, CMethods, CComputed, CProps>({
   name: 'album-page',
   data: () => ({
     songs: [],
@@ -37,7 +57,7 @@ export default {
     },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },
@@ -47,5 +67,5 @@ export default {
   components: {
     SongPage,
   },
-};
+});
 </script>

@@ -85,7 +85,7 @@ declare global {
     artist: string;
   };
 
-  type Computed<T> = () => T;
+  type Enqueue = (data: { songs: SongData[]; shuffle?: boolean }) => void;
 
   type ContextMenuItem = {
     icon:

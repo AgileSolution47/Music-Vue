@@ -35,7 +35,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
 
@@ -44,7 +45,32 @@ import SearchBar from './shared/SearchBar.vue';
 import ContextMenu from './shared/ContextMenu.vue';
 import { displace } from '../helpers/displace';
 
-export default {
+interface CData {
+  allSongs: SongData[] | null;
+  searchQuery: string;
+  items: ContextMenuItem[];
+  posx: number;
+  posy: number;
+  index: number;
+}
+
+interface CMethods {
+  enqueue: Enqueue;
+  playSong: (index: number, shuffle?: boolean) => void;
+  addToAlbum: () => void;
+  toggleLike: () => void;
+  deleteSong: () => void;
+  random: () => number;
+  openContextMenu: (event: MouseEvent, index: number, deletable: boolean) => void;
+  reset: () => void;
+  fetchData: () => void;
+}
+
+interface CComputed {
+  songs: SongData[] | null;
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'music-page',
   data: () => ({
     allSongs: [],
@@ -163,7 +189,7 @@ export default {
     SearchBar,
     ContextMenu,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

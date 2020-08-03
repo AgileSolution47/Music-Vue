@@ -24,13 +24,34 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
 import generateSubtitle from '@/helpers/generateSubtitle';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
 
-export default {
+interface CData {
+  artists: ArtistData[];
+  posx: number;
+  posy: number;
+  items: ContextMenuItem[];
+  index: number;
+}
+
+interface CMethods {
+  playArtist: () => Promise<void>;
+  openContextMenu: (event: MouseEvent, index: number, deletable: boolean) => void;
+  reset: () => void;
+  fetchData: () => void;
+}
+
+interface CComputed {
+  subtitles: string[];
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'artists-page',
   data: () => ({
     artists: [],
@@ -93,7 +114,7 @@ export default {
     CoverImage,
     ContextMenu,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

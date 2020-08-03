@@ -44,16 +44,41 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import { remote, ipcRenderer } from 'electron';
 import path from 'path';
+
+import { SettingsState } from '@/store/types';
 
 import ToggleButton from './SettingsPage/ToggleButton.vue';
 import NumberSelection from './SettingsPage/NumberSelection.vue';
 import SettingItem from './SettingsPage/SettingItem.vue';
 
-export default {
+interface CMethods {
+  toggleAnimations: () => void;
+  toggleControlWindow: () => void;
+  changeJumpBack: (delta: number) => void;
+  changeSeekBack: (delta: number) => void;
+  changeSeekAhead: (delta: number) => void;
+  changeJumpAhead: (delta: number) => void;
+  updateChanges: () => Promise<void>;
+  changeDirectory: () => Promise<void>;
+  importData: () => void;
+  exportData: () => void;
+}
+
+interface CComputed {
+  results: NapsterSongData[];
+  error: any;
+  loading: boolean;
+  errored: boolean;
+  mappedCompleted: boolean[];
+  filteredResults: NapsterSongData[];
+}
+
+export default Vue.extend<{}, CMethods, SettingsState>({
   name: 'settings-page',
   components: { ToggleButton, NumberSelection, SettingItem },
   computed: mapState('settings', [
@@ -99,7 +124,7 @@ export default {
       console.log('TODO: Export Data');
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

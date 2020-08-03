@@ -20,14 +20,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { debounce } from 'lodash';
 import { mapGetters } from 'vuex';
+import { Route } from 'vue-router';
 
 import SideBar from './components/SideBar.vue';
 import SearchBar from './components/shared/SearchBar.vue';
 
-const paths = {
+const paths: obj = {
   '/': [0, 0, 0],
   '/home': [0, 1, 0],
   '/music': [0, 2, 0],
@@ -41,7 +43,25 @@ const paths = {
   '/register-keys': [2, 0, 0],
 };
 
-export default {
+interface CData {
+  transitionName: string;
+  titleOpacity: number;
+  headerOpacity: number;
+}
+
+interface CMethods {
+  onScroll: (event: Event) => void;
+  getTransitionName: (to: Route, from: Route) => string;
+  search: (query: string) => void;
+  handleSearch: (query: string) => void;
+}
+
+interface CComputed {
+  apiKeysValid: boolean;
+  pageTitle: string;
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'Music',
   data: () => ({
     transitionName: '',
@@ -51,14 +71,15 @@ export default {
   mounted() {
     this.$store.dispatch('settings/load');
     window.store = this.$store;
-    document.getElementById('scroll-el').addEventListener('scroll', this.onScroll);
+    // eslint-disable-next-line no-unused-expressions
+    document.getElementById('scroll-el')?.addEventListener('scroll', this.onScroll);
     if (!this.apiKeysValid && this.$route.path !== '/register-keys') {
       this.$router.push('/register-keys');
     }
   },
   methods: {
     onScroll(event) {
-      const opacity = event.target.scrollTop > 80 ? 1 : 0;
+      const opacity = (event.target as HTMLDivElement).scrollTop > 80 ? 1 : 0;
       if (opacity !== this.titleOpacity) this.titleOpacity = opacity;
     },
     getTransitionName(to, from) {
@@ -83,7 +104,7 @@ export default {
 
       return transitionName;
     },
-    search: debounce(function(query) {
+    search: debounce(function (this: any, query: string) {
       this.$store.dispatch('searchResults/search', query);
     }, 700),
     handleSearch(query) {
@@ -92,21 +113,21 @@ export default {
     },
   },
   computed: {
-    pageTitle() {
-      return this.$route.name[0] === '\\' ? '' : this.$route.name;
-    },
     ...mapGetters('apiKeys', {
       apiKeysValid: 'valid',
     }),
+    pageTitle() {
+      return (this.$route.name?.charAt(0) === '\\' ? '' : this.$route.name) ?? '';
+    },
   },
   components: {
     SideBar,
     SearchBar,
   },
   watch: {
-    $route(to, from) {
+    $route(to: Route, from: Route) {
       this.transitionName = this.getTransitionName(to, from);
-      this.headerOpacity = to.name[0] === '\\' ? 0 : 1;
+      this.headerOpacity = (to.name?.charAt(0) === '\\' ? 0 : 1) ?? 0;
       this.titleOpacity = 0;
       if (to.name === 'Download') this.$store.commit('searchResults/clear');
       setTimeout(() => {
@@ -116,7 +137,7 @@ export default {
       }, 100);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

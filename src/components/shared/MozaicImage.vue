@@ -5,8 +5,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+interface CComputed {
+  isSingleImage: boolean;
+}
+
+interface CProps {
+  images: string[];
+  title: string;
+}
+
+export default Vue.extend<{}, {}, CComputed, CProps>({
   name: 'mozaic-image',
   props: {
     images: Array,
@@ -17,7 +28,7 @@ export default {
       return this.images.length === 1;
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

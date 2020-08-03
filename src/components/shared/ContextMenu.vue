@@ -19,7 +19,8 @@
   </ul>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import HeartIcon from 'vue-material-design-icons/Heart.vue';
 import HeartOutlineIcon from 'vue-material-design-icons/HeartOutline.vue';
 import PlayIcon from 'vue-material-design-icons/Play.vue';
@@ -27,7 +28,22 @@ import PlaylistPlayIcon from 'vue-material-design-icons/PlaylistPlay.vue';
 import PlaylistPlusIcon from 'vue-material-design-icons/PlaylistPlus.vue';
 import DeleteIcon from 'vue-material-design-icons/Delete.vue';
 
-export default {
+interface CData {
+  timeout: NodeJS.Timeout | null;
+}
+
+interface CMethods {
+  startTimer: () => void;
+  clearTimer: () => void;
+}
+
+interface CProps {
+  posx: number;
+  posy: number;
+  items: ContextMenuItem[];
+}
+
+export default Vue.extend<CData, CMethods, {}, CProps>({
   name: 'context-menu',
   data: () => ({
     timeout: null,
@@ -37,7 +53,9 @@ export default {
       this.timeout = setTimeout(() => this.$emit('reset'), 1000);
     },
     clearTimer() {
-      clearTimeout(this.timeout);
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
     },
   },
   props: {
@@ -56,7 +74,7 @@ export default {
     PlaylistPlusIcon,
     DeleteIcon,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

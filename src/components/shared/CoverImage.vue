@@ -13,10 +13,19 @@
   </div>
 </template>
 
-<script>
-import MozaicImage from './MozaicImage';
+<script lang="ts">
+import Vue from 'vue';
 
-export default {
+import MozaicImage from './MozaicImage.vue';
+
+interface CProps {
+  title: string;
+  image?: string;
+  images?: string[];
+  subtitle: string;
+}
+
+export default Vue.extend<{}, {}, {}, CProps>({
   name: 'cover-image',
   props: {
     title: { type: String, required: true },
@@ -27,7 +36,7 @@ export default {
   components: {
     MozaicImage,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

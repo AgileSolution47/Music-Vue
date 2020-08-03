@@ -98,7 +98,8 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { ipcRenderer } from 'electron';
 import MusicNoteIcon from 'vue-material-design-icons/MusicNote.vue';
@@ -107,18 +108,32 @@ import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue';
 import HomeIcon from 'vue-material-design-icons/Home.vue';
 import CogIcon from 'vue-material-design-icons/Cog.vue';
 
-export default {
+interface Progress {
+  text: string;
+  progress: number;
+}
+
+interface CData {
+  progress: Progress[];
+}
+
+interface CComputed {
+  disabled: boolean;
+  apiKeysValid: boolean;
+}
+
+export default Vue.extend<CData, {}, CComputed>({
   name: 'side-bar',
   data: () => ({
     progress: [],
   }),
   computed: {
-    disabled() {
-      return !this.apiKeysValid;
-    },
     ...mapGetters('apiKeys', {
       apiKeysValid: 'valid',
     }),
+    disabled() {
+      return !this.apiKeysValid;
+    },
   },
   components: {
     MusicNoteIcon,
@@ -152,7 +167,7 @@ export default {
       this.progress.splice(index, 1);
     });
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

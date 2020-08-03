@@ -48,19 +48,49 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import PlusIcon from 'vue-material-design-icons/Plus.vue';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
+import { stringifyArr } from '@/helpers/database_functions';
 import musicSymbol from '@/assets/music_symbol.png';
 import likedImage from '@/assets/liked.png';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
-import { stringifyArr } from '../helpers/database_functions';
 
-export default {
+interface CData {
+  musicSymbol: string;
+  likedImage: string;
+  likedSubtitle: string;
+  albums: AlbumData[];
+  customAlbums: CustomAlbumData[];
+  posx: number;
+  posy: number;
+  albumItems: ContextMenuItem[];
+  customAlbumItems: ContextMenuItem[];
+  items: ContextMenuItem[];
+  index: number;
+}
+
+interface CMethods {
+  enqueue: Enqueue;
+  playAlbum: () => Promise<void>;
+  playCustomAlbum: () => Promise<void>;
+  deleteCustomAlbum: () => void;
+  openContextMenu: (event: MouseEvent, index: number, deletable: boolean) => void;
+  reset: () => void;
+  fetchData: () => void;
+}
+
+interface CComputed {
+  albumSubtitles: string[];
+  customAlbumSubtitles: string[];
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'albums-page',
   data: () => ({
     musicSymbol,
@@ -179,7 +209,7 @@ export default {
     CoverImage,
     ContextMenu,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

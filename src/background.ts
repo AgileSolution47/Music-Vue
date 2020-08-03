@@ -109,6 +109,7 @@ ipcMain.on('download:init', (_, path: string) => {
   downloader = new YtDownloader(path);
 
   downloader.onProgress(progress => {
+    // eslint-disable-next-line no-unused-expressions
     win?.webContents.send('download:progress', progress);
   });
 });

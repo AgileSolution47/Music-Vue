@@ -1,4 +1,4 @@
-const formatLength = (length: number, total: number) => {
+const formatLength = (length: number, total?: number) => {
   const onlyOne = total === undefined;
 
   if (total === undefined) {

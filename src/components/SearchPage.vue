@@ -34,7 +34,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapState, mapActions } from 'vuex';
 import { ipcRenderer } from 'electron';
 import AlertCircleIcon from 'vue-material-design-icons/AlertCircle.vue';
@@ -43,7 +44,33 @@ import CheckIcon from 'vue-material-design-icons/Check.vue';
 import SongItem from './shared/SongItem.vue';
 import LoadingIcon from './shared/LoadingIcon.vue';
 
-export default {
+interface Progress {
+  text: string;
+  progress: number;
+}
+
+interface CData {
+  progress: Progress[];
+  completed: string[];
+  alreadyDownloaded: Set<string>;
+}
+
+interface CMethods {
+  downloadSong: (song: NapsterSongData) => Promise<void>;
+  createText: (song: { title: string; albumId: string }) => string;
+}
+
+interface CComputed {
+  results: NapsterSongData[];
+  error: any;
+  loading: boolean;
+  errored: boolean;
+  mappedProgress: (Progress | undefined)[];
+  mappedCompleted: boolean[];
+  filteredResults: NapsterSongData[];
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'search-page',
   data: () => ({
     progress: [],
@@ -61,31 +88,35 @@ export default {
     mappedProgress() {
       if (this.loading || this.errored) return [];
 
-      return this.results.map(s =>
-        this.progress.find(item => item.text === `${s.title}${s.albumId}`)
-      );
+      return this.results.map(s => {
+        const text = this.createText(s);
+        return this.progress.find(item => item.text === text);
+      });
     },
     mappedCompleted() {
       if (this.loading || this.errored) return [];
 
-      return this.results.map(s => this.completed.includes(`${s.title}${s.albumId}`));
+      return this.results.map(s => this.completed.includes(this.createText(s)));
     },
     filteredResults() {
-      return this.results.filter(r => !this.alreadyDownloaded.has(`${r.title}${r.albumId}`));
+      return this.results.filter(r => !this.alreadyDownloaded.has(this.createText(r)));
     },
   },
-  methods: mapActions('data', ['downloadSong']),
+  methods: {
+    ...mapActions('data', ['downloadSong']),
+    createText: s => `${s.title}${s.albumId}`,
+  },
   mounted() {
     window.db.getSongs().then(songs => {
-      this.alreadyDownloaded = new Set(songs.map(s => `${s.title}${s.albumId}`));
+      this.alreadyDownloaded = new Set(songs.map(this.createText));
     });
 
-    ipcRenderer.on('download:progress', (_, { albumId, title, percent }) => {
-      const text = `${title}${albumId}`;
+    ipcRenderer.on('download:progress', (_, { percent, ...progress }: DownloadProgress) => {
+      const text = this.createText(progress);
       const index = this.progress.findIndex(item => item.text === text);
       percent *= 100;
 
-      const item = {
+      const item: Progress = {
         text,
         progress: percent > 100 ? 100 : Math.round(percent),
       };
@@ -97,8 +128,8 @@ export default {
       }
     });
 
-    ipcRenderer.on('download:complete', (_, { albumId, title }) => {
-      const text = `${title}${albumId}`;
+    ipcRenderer.on('download:complete', (_, song: NapsterSongData) => {
+      const text = this.createText(song);
       const index = this.progress.findIndex(item => item.text === text);
 
       this.progress.splice(index, 1);
@@ -111,7 +142,7 @@ export default {
     LoadingIcon,
     CheckIcon,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

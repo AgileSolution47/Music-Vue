@@ -16,10 +16,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
 import formatLength from '@/helpers/formatLength';
 
-export default {
+interface CComputed {
+  length: string;
+}
+
+interface CProps {
+  song: SongData;
+}
+
+export default Vue.extend<{}, {}, CComputed, CProps>({
   name: 'song-item',
   computed: {
     length() {
@@ -36,7 +46,7 @@ export default {
       },
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -5,11 +5,17 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+interface CProps {
+  toggled: boolean;
+}
+
+export default Vue.extend<{}, {}, {}, CProps>({
   name: 'toggle-button',
   props: { toggled: Boolean },
-};
+});
 </script>
 
 <style lang="scss" scoped>

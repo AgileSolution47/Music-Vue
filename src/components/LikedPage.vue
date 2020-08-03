@@ -2,13 +2,28 @@
   <song-page :songs="songs" :image="image" title="Liked" :subtext="subtext" />
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
+
 import generateSubtitle from '@/helpers/generateSubtitle';
 import likedImage from '@/assets/liked.png';
 
 import SongPage from './shared/SongPage.vue';
 
-export default {
+interface CData {
+  songs: SongData[];
+  image: string;
+}
+
+interface CMethods {
+  fetchData: () => void;
+}
+
+interface CComputed {
+  subtext: string;
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'album-page',
   data: () => ({
     songs: [],
@@ -30,7 +45,7 @@ export default {
     },
   },
   watch: {
-    '$store.state.data.updater': function() {
+    '$store.state.data.updater': function () {
       this.fetchData();
     },
   },
@@ -40,5 +55,5 @@ export default {
   components: {
     SongPage,
   },
-};
+});
 </script>

@@ -56,13 +56,33 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import axios from 'axios';
 import CheckIcon from 'vue-material-design-icons/Check.vue';
 
 import MaterialLoader from './shared/MaterialLoader.vue';
 
-export default {
+interface CData {
+  state: number;
+  napsterApiKey: string;
+  firestoreProjectId: string;
+  firestoreAppId: string;
+  firestoreApiKey: string;
+  napsterErrored: boolean;
+}
+
+interface CMethods {
+  validateNapsterKey: () => Promise<void>;
+  handleClick: () => void;
+}
+
+interface CComputed {
+  buttonText: string;
+  buttonIcon: string;
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'register-api-keys-page',
   data: () => ({
     state: -1,
@@ -142,7 +162,7 @@ export default {
     CheckIcon,
     MaterialLoader,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

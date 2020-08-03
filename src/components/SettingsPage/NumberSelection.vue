@@ -10,13 +10,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+interface CProps {
+  num: number;
+}
+
+export default Vue.extend<{}, {}, {}, CProps>({
   name: 'number-selection',
   props: {
     num: { type: Number, required: true },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

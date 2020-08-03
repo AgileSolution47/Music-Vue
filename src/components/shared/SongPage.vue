@@ -35,7 +35,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
 
@@ -45,37 +46,69 @@ import SongItem from './SongItem.vue';
 import MozaicImage from './MozaicImage.vue';
 import ContextMenu from './ContextMenu.vue';
 
-export default {
+interface CData {
+  posx: number;
+  posy: number;
+  items: ContextMenuItem[];
+  index: number;
+}
+
+interface CMethods {
+  enqueue: Enqueue;
+  playSong: (index: number) => void;
+  addToAlbum: () => void;
+  toggleLike: () => void;
+  deleteSong: () => void;
+  openContextMenu: (event: MouseEvent, index: number, deletable: boolean) => void;
+  reset: () => void;
+}
+
+interface CComputed {
+  mozaicImages: string[];
+}
+
+interface CProps {
+  subtext: string | null;
+  title: string;
+  songs: SongData[];
+  image: string | undefined;
+  images: string[];
+}
+
+export default Vue.extend<CData, CMethods, CComputed, CProps>({
   name: 'album-page',
-  data() {
-    return {
-      items: [
-        {
-          icon: 'play-icon',
-          title: 'Play',
-          handler: 'play',
-        },
-        {
-          icon: 'playlist-plus-icon',
-          title: 'Add to Album',
-          handler: 'addtoalbum',
-        },
-        {
-          icon: 'heart-icon',
-          title: 'Unlike',
-          handler: 'toggleLike',
-        },
-        {
-          icon: 'delete-icon',
-          title: 'Delete',
-          colour: 'red',
-          handler: 'delete',
-        },
-      ],
-      posx: -200,
-      posy: -200,
-      index: -1,
-    };
+  data: () => ({
+    items: [
+      {
+        icon: 'play-icon',
+        title: 'Play',
+        handler: 'play',
+      },
+      {
+        icon: 'playlist-plus-icon',
+        title: 'Add to Album',
+        handler: 'addtoalbum',
+      },
+      {
+        icon: 'heart-icon',
+        title: 'Unlike',
+        handler: 'toggleLike',
+      },
+      {
+        icon: 'delete-icon',
+        title: 'Delete',
+        colour: 'red',
+        handler: 'delete',
+      },
+    ],
+    posx: -200,
+    posy: -200,
+    index: -1,
+  }),
+  computed: {
+    mozaicImages() {
+      return this.images || [this.image];
+    },
   },
   props: {
     subtext: { type: String, default: null },
@@ -83,11 +116,6 @@ export default {
     songs: { type: Array, required: true },
     image: { type: String },
     images: { type: Array },
-  },
-  computed: {
-    mozaicImages() {
-      return this.images || [this.image];
-    },
   },
   methods: {
     ...mapMutations('queue', ['enqueue']),
@@ -112,7 +140,6 @@ export default {
     },
     openContextMenu(event, index) {
       const { liked } = this.songs[index];
-
       this.index = index;
 
       this.items[2].title = liked ? 'Unlike' : 'Like';
@@ -120,8 +147,10 @@ export default {
 
       const scrollEl = document.getElementById('scroll-el');
 
-      this.posx = event.pageX + scrollEl.scrollLeft - 50;
-      this.posy = event.pageY + scrollEl.scrollTop;
+      if (scrollEl) {
+        this.posx = event.pageX + scrollEl.scrollLeft - 50;
+        this.posy = event.pageY + scrollEl.scrollTop;
+      }
     },
     reset() {
       this.posx = -200;
@@ -134,7 +163,7 @@ export default {
     MozaicImage,
     ContextMenu,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

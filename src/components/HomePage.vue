@@ -43,16 +43,45 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import { mapMutations } from 'vuex';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
-// import { displace } from '@/helpers/displace';
+import { displace } from '@/helpers/displace';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
 
-export default {
+interface CData {
+  topSongs: SongData[] | null;
+  topAlbums: AlbumData[] | null;
+  posx: number;
+  posy: number;
+  songItems: ContextMenuItem[];
+  albumItems: ContextMenuItem[];
+  items: ContextMenuItem[];
+  index: number;
+}
+
+interface CMethods {
+  enqueue: Enqueue;
+  playSong: (index: number) => Promise<void>;
+  playAlbum: () => Promise<void>;
+  addToAlbum: () => void;
+  toggleLike: () => void;
+  deleteSong: () => void;
+  openContextMenu: (event: MouseEvent, index: number, deletable: boolean) => void;
+  reset: () => void;
+  fetchData: () => void;
+}
+
+interface CComputed {
+  songSubtitles: string[];
+  albumSubtitles: string[];
+}
+
+export default Vue.extend<CData, CMethods, CComputed>({
   name: 'home-page',
   data: () => ({
     topSongs: [],
@@ -123,8 +152,8 @@ export default {
     async playSong(index) {
       if (this.topSongs === null) throw new Error('No Songs');
       console.log('PLAY SONG', index);
-      // const songs = await window.db.getTopSongs();
-      // this.enqueue({ song: displace(songs, index) });
+      const songs = await window.db.getTopSongs();
+      this.enqueue({ songs: displace(songs, index) });
       this.reset();
     },
     addToAlbum() {
@@ -190,7 +219,7 @@ export default {
     CoverImage,
     ContextMenu,
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

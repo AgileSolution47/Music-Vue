@@ -13,10 +13,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import MagnifyIcon from 'vue-material-design-icons/Magnify.vue';
 
-export default {
+interface CData {
+  searchQuery: string;
+}
+
+interface CMethods {
+  search: () => void;
+}
+
+interface CProps {
+  placeholder: string;
+}
+
+export default Vue.extend<CData, CMethods, {}, CProps>({
   name: 'search-box',
   props: {
     placeholder: {
@@ -35,7 +48,7 @@ export default {
       this.$emit('search', this.searchQuery);
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

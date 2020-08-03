@@ -5,13 +5,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue';
+
+interface CProps {
+  name: string;
+}
+
+export default Vue.extend<{}, {}, {}, CProps>({
   name: 'setting-item',
   props: {
     name: { type: String, required: true },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
