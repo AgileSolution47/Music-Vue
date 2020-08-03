@@ -93,12 +93,12 @@ export default {
     },
     toggleLike() {
       if (this.songs === null) throw new Error('No Songs');
-      this.$store.dispatch('queue/toggleLike', this.songs[this.index]);
+      this.$store.dispatch('toggleLiked', this.songs[this.index]);
       this.reset();
     },
     deleteSong() {
       if (this.songs === null) throw new Error('No Songs');
-      this.$store.dispatch('queue/deleteSong', this.songs[this.index]);
+      this.$store.dispatch('deleteSong', this.songs[this.index]);
       this.reset();
     },
     openContextMenu(event, index) {

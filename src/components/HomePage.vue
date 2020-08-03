@@ -15,7 +15,7 @@
       <p v-if="topSongs === null" class="nothing">No Songs</p>
       <template v-else>
         <h1 class="header">Top Albums</h1>
-        <transition-group tag="ul" name="cover-image" class="cover-images">
+        <ul class="cover-images">
           <cover-image
             v-for="(album, index) in topAlbums"
             :key="album.id"
@@ -25,9 +25,9 @@
             @right-click="openContextMenu($event, index, false)"
             @left-click="$router.push({ name: '\\album-page', query: album })"
           />
-        </transition-group>
+        </ul>
         <h1 class="header">Top Songs</h1>
-        <transition-group tag="ul" name="cover-image" class="cover-images">
+        <ul class="cover-images">
           <cover-image
             v-for="(song, index) in topSongs"
             :key="song.title"
@@ -37,7 +37,7 @@
             @right-click="openContextMenu($event, index, true)"
             @left-click="playSong(index)"
           />
-        </transition-group>
+        </ul>
       </template>
     </div>
   </div>
@@ -137,12 +137,12 @@ export default {
     },
     toggleLike() {
       if (this.topSongs === null) throw new Error('No Songs');
-      this.$store.dispatch('queue/toggleLike', this.topSongs[this.index]);
+      this.$store.dispatch('toggleLiked', this.topSongs[this.index]);
       this.reset();
     },
     deleteSong() {
       if (this.topSongs === null) throw new Error('No Songs');
-      this.$store.dispatch('queue/deleteSong', this.topSongs[this.index]);
+      this.$store.dispatch('deleteSong', this.topSongs[this.index]);
       this.reset();
     },
     openContextMenu(event, index, isSong) {
@@ -205,10 +205,6 @@ export default {
   min-height: 14rem;
 
   .cover-image {
-    &-move {
-      transition: 1s;
-    }
-
     margin-right: 1rem;
     transition: 1s;
     &:last-child {

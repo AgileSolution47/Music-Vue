@@ -103,11 +103,11 @@ export default {
       this.reset();
     },
     toggleLike() {
-      this.$store.dispatch('queue/toggleLike', this.songs[this.index]);
+      this.$store.dispatch('toggleLiked', this.songs[this.index]);
       this.reset();
     },
     deleteSong() {
-      this.$store.dispatch('queue/deleteSong', this.songs[this.index]);
+      this.$store.dispatch('deleteSong', this.songs[this.index]);
       this.reset();
     },
     openContextMenu(event, index) {

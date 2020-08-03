@@ -1,10 +1,8 @@
-import { ActionTree, MutationTree } from 'vuex';
-// import { promises as fs } from 'fs';
+import { MutationTree } from 'vuex';
 
-import { Tables } from '@/helpers/database_functions';
 import shuffleArray from '@/helpers/shuffleArray';
 
-import { RootState, QueueState } from '../types';
+import { QueueState } from '../types';
 
 const state: QueueState = {
   queue: [],
@@ -93,43 +91,8 @@ const mutations: MutationTree<QueueState> = {
   },
 };
 
-const actions: ActionTree<QueueState, RootState> = {
-  async deleteSong({ commit }, song: SongData) {
-    // TODO uncomment delete file code
-    // const data = { numSongs: await window.db.getNumSongs(song.albumId) - 1};
-
-    // await Promise.all([
-    //   fs.unlink(song.filePath);
-    //   window.db.deleteSong(song.title),
-    //   window.db.update(
-    //     Tables.Albums,
-    //     data,
-    //     'id LIKE ?',
-    //     [song.albumId],
-    //   ),
-    // ]);
-
-    // await window.db.deleteEmptyAlbums();
-
-    commit('removeSong', song);
-    commit('data/update', undefined, { root: true });
-  },
-  async toggleLiked({ commit }, song: SongData) {
-    await window.db.update(
-      Tables.Songs,
-      { liked: song.liked ? 0 : 1 }, // invert liked
-      'title LIKE ?',
-      [song.title]
-    );
-
-    commit('toggleLike', song);
-    commit('data/update', undefined, { root: true });
-  },
-};
-
 export default {
   state,
   mutations,
-  actions,
   namespaced: true,
 };
