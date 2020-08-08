@@ -9,7 +9,7 @@ const state: QueueState = {
   allSongs: [],
   loop: false,
   shuffle: false,
-  index: -1,
+  index: 0,
 };
 
 interface EnqueueEvent {
@@ -21,32 +21,32 @@ const mutations: MutationTree<QueueState> = {
   enqueue(state, { songs, shuffle }: EnqueueEvent) {
     shuffle = shuffle ?? false;
 
-    console.log({ songs, shuffle });
-    // state.index = 0;
-    // state.shuffle = shuffle;
-    // state.allSongs = [...songs];
+    state.index = 0;
+    state.shuffle = shuffle;
+    state.allSongs = [...songs];
 
-    // if (shuffle) {
-    //   state.queue = shuffleArray([...songs], 0);
-    // } else {
-    //   state.queue = [...songs];
-    // }
+    if (shuffle) {
+      state.queue = shuffleArray([...songs], 0);
+    } else {
+      state.queue = [...songs];
+    }
   },
   dequeue(state) {
     state.allSongs = [];
     state.queue = [];
+    state.index = 0;
   },
   gotoSong(state, index: number) {
     state.index = index;
   },
   nextSong(state) {
     if (!state.loop) {
-      state.index += 1;
+      state.index = (state.index + 1) % state.queue.length;
     }
   },
   prevSong(state) {
     if (!state.loop) {
-      state.index -= 1;
+      state.index = (state.index - 1) % state.queue.length;
     }
   },
   toggleShuffle(state) {
@@ -56,6 +56,8 @@ const mutations: MutationTree<QueueState> = {
       state.queue = shuffleArray([...state.allSongs], state.index);
       state.index = 0;
     } else {
+      const { title } = state.queue[state.index];
+      state.index = state.allSongs.findIndex(s => s.title === title);
       state.queue = [...state.allSongs];
     }
   },

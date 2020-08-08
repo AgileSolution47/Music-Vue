@@ -16,6 +16,7 @@
           <router-view></router-view>
         </transition>
       </div>
+      <player-bar />
     </main>
   </div>
 </template>
@@ -27,6 +28,7 @@ import { mapGetters } from 'vuex';
 import { Route } from 'vue-router';
 
 import SideBar from './components/SideBar.vue';
+import PlayerBar from './components/PlayerBar.vue';
 import SearchBar from './components/shared/SearchBar.vue';
 
 const paths: obj = {
@@ -121,6 +123,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
   },
   components: {
+    PlayerBar,
     SideBar,
     SearchBar,
   },
@@ -166,6 +169,7 @@ header {
   transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
   padding-right: calc(5vw + 1.3rem);
   padding-left: calc(5vw + 2.1rem);
+  background: transparentize($color: $bg, $amount: 0.35);
 
   > div {
     @include flex-box;
