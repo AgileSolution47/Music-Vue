@@ -47,7 +47,11 @@ export default Vue.extend<CData, {}, CComputed, CProps>({
   }),
   computed: {
     disabled() {
-      return !this.isValid || !this.isInput || this.input.length === 0;
+      if (this.isInput) {
+        return !this.isValid || this.input.length === 0;
+      }
+
+      return !this.isValid;
     },
   },
   props: {

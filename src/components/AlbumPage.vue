@@ -4,9 +4,11 @@
     :image="image"
     :title="album.name"
     :subtext="subtext"
-    @edit="editAlbum"
+    @edit="showEdit = true"
     @delete="deleteAlbum"
-  />
+  >
+    <edit-custom-album v-if="isCustom" :show="showEdit" :album="album" @close="showEdit = false" />
+  </song-page>
 </template>
 
 <script lang="ts">
@@ -17,14 +19,15 @@ import generateSubtitle from '@/helpers/generateSubtitle';
 import { stringifyArr } from '@/helpers/database_functions';
 
 import SongPage from './shared/SongPage.vue';
+import EditCustomAlbum from './shared/EditCustomAlbum.vue';
 
 interface CData {
   songs: SongData[];
+  showEdit: boolean;
 }
 
 interface CMethods {
-  fetchData: () => void;
-  editAlbum: () => void;
+  fetchData: (songs?: string[]) => void;
   deleteAlbum: () => void;
 }
 
@@ -47,6 +50,7 @@ export default Vue.extend<CData, CMethods, CComputed, CADProps | ADProps>({
   name: 'album-page',
   data: () => ({
     songs: [],
+    showEdit: false,
   }),
   props: {
     album: Object,
@@ -65,9 +69,9 @@ export default Vue.extend<CData, CMethods, CComputed, CADProps | ADProps>({
     },
   },
   methods: {
-    fetchData() {
-      if (this.isCustom) {
-        window.db.getSongs(`title IN (${stringifyArr(this.album.songs)})`).then(songs => {
+    fetchData(songs?: string[]) {
+      if (songs) {
+        window.db.getSongs(`title IN (${stringifyArr(songs)})`).then(songs => {
           this.songs = songs;
         });
       } else {
@@ -76,26 +80,28 @@ export default Vue.extend<CData, CMethods, CComputed, CADProps | ADProps>({
         });
       }
     },
-    editAlbum() {
-      if (!this.isCustom) throw new Error('Only allowed for custom albums');
-      console.log('EDIT ALBUM');
-    },
     async deleteAlbum() {
       if (!this.isCustom) throw new Error('Only allowed for custom albums');
-      // await this.$store.dispatch('deleteCustomAlbum', this.album.id);
+      await this.$store.dispatch('deleteCustomAlbum', this.album.id);
       this.$router.back();
     },
   },
   watch: {
-    '$store.state.updater': function () {
-      this.fetchData();
+    '$store.state.updater': async function () {
+      const album = await window.db.getCustomAlbums('id LIKE ?', [this.album.id]);
+      this.fetchData(album[0].songs);
     },
   },
   beforeMount() {
-    this.fetchData();
+    if (this.isCustom) {
+      this.fetchData(this.album.songs);
+    } else {
+      this.fetchData();
+    }
   },
   components: {
     SongPage,
+    EditCustomAlbum,
   },
 });
 </script>

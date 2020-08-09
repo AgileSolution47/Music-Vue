@@ -1,6 +1,7 @@
 <template>
   <div class="scroll-el" id="scroll-el" key="album">
     <div class="page">
+      <slot />
       <context-menu
         :items="items"
         :posx="posx"
