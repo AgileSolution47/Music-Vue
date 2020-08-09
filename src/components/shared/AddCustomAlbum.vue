@@ -1,7 +1,7 @@
 <template>
   <modal-view
     :show="show"
-    title="Add Custom Album"
+    title="Album Name"
     buttonText="Add"
     @close="handleClose"
     isInput
@@ -60,12 +60,6 @@ export default Vue.extend<CData, CMethods, {}, CProps>({
     },
     async handleClose(cancel, name = '') {
       if (!cancel) {
-        const albumNames = (await window.db.getCustomAlbums()).map(a => a.name);
-        if (albumNames.includes(name)) {
-          // eslint-disable-next-line no-alert
-          alert(`${name} already exists`);
-          return;
-        }
         const songs = this.songs.filter((_, index) => this.selected[index]).map(s => s.title);
         this.$store.dispatch('addCustomAlbum', { name, songs });
       }

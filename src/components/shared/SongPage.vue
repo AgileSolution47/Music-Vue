@@ -2,13 +2,18 @@
   <div class="scroll-el" id="scroll-el" key="album">
     <div class="page">
       <slot />
+      <add-song-to-album
+        :show="addSongToAlbumSong !== null"
+        :song="addSongToAlbumSong"
+        @close="addSongToAlbumSong = null"
+      />
       <context-menu
         :items="items"
         :posx="posx"
         :posy="posy"
         @reset="reset"
         @play="playSong(index)"
-        @addtoalbum="addToAlbum"
+        @addToAlbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
       />
@@ -44,20 +49,20 @@
 import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
-// import PencilIcon from 'vue-material-design-icons/Pencil.vue';
-// import DeleteIcon from 'vue-material-design-icons/Delete.vue';
 
 import { displace } from '@/helpers/displace';
 
 import SongItem from './SongItem.vue';
 import MozaicImage from './MozaicImage.vue';
 import ContextMenu from './ContextMenu.vue';
+import AddSongToAlbum from './AddSongToAlbum.vue';
 
 interface CData {
   posx: number;
   posy: number;
   items: ContextMenuItem[];
   index: number;
+  addSongToAlbumSong: SongData | null;
 }
 
 interface CMethods {
@@ -94,7 +99,7 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
       {
         icon: 'playlist-plus-icon',
         title: 'Add to Album',
-        handler: 'addtoalbum',
+        handler: 'addToAlbum',
       },
       {
         icon: 'heart-icon',
@@ -111,6 +116,7 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
     posx: -200,
     posy: -200,
     index: -1,
+    addSongToAlbumSong: null,
   }),
   computed: {
     mozaicImages() {
@@ -131,10 +137,7 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
       this.reset();
     },
     addToAlbum() {
-      console.log('TODO ADD TO ALBUM', {
-        index: this.index,
-        song: this.songs[this.index],
-      });
+      this.addSongToAlbumSong = this.songs[this.index];
       this.reset();
     },
     toggleLike() {
@@ -169,6 +172,7 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
     DotsHorizontalIcon,
     MozaicImage,
     ContextMenu,
+    AddSongToAlbum,
   },
 });
 </script>

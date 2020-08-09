@@ -1,6 +1,11 @@
 <template>
   <div class="scroll-el" id="scroll-el" key="home">
     <div class="page">
+      <add-song-to-album
+        :show="addSongToAlbumSong !== null"
+        :song="addSongToAlbumSong"
+        @close="addSongToAlbumSong = null"
+      />
       <context-menu
         :items="items"
         :posx="posx"
@@ -8,7 +13,7 @@
         @reset="reset"
         @playAlbum="playAlbum"
         @play="playSong(index)"
-        @addtoalbum="addToAlbum"
+        @addToAlbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
       />
@@ -52,6 +57,7 @@ import { displace } from '@/helpers/displace';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
+import AddSongToAlbum from './shared/AddSongToAlbum.vue';
 
 interface CData {
   topSongs: SongData[] | null;
@@ -62,6 +68,7 @@ interface CData {
   albumItems: ContextMenuItem[];
   items: ContextMenuItem[];
   index: number;
+  addSongToAlbumSong: SongData | null;
 }
 
 interface CMethods {
@@ -97,7 +104,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
       {
         icon: 'playlist-plus-icon',
         title: 'Add to Album',
-        handler: 'addtoalbum',
+        handler: 'addToAlbum',
       },
       {
         icon: 'heart-icon',
@@ -120,6 +127,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     ],
     items: [],
     index: 0,
+    addSongToAlbumSong: null,
   }),
   computed: {
     songSubtitles() {
@@ -157,10 +165,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
     addToAlbum() {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log('TODO ADD TO ALBUM', {
-        index: this.index,
-        song: this.topSongs[this.index],
-      });
+      this.addSongToAlbumSong = this.topSongs[this.index];
       this.reset();
     },
     toggleLike() {
@@ -217,6 +222,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
   components: {
     CoverImage,
     ContextMenu,
+    AddSongToAlbum,
   },
 });
 </script>

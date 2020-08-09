@@ -1,13 +1,18 @@
 <template>
   <div class="scroll-el" id="scroll-el" key="music">
     <div class="page">
+      <add-song-to-album
+        :show="addSongToAlbumSong !== null"
+        :song="addSongToAlbumSong"
+        @close="addSongToAlbumSong = null"
+      />
       <context-menu
         :items="items"
         :posx="posx"
         :posy="posy"
         @reset="reset"
         @play="playSong(index)"
-        @addtoalbum="addToAlbum"
+        @addToAlbum="addToAlbum"
         @toggleLike="toggleLike"
         @delete="deleteSong"
       />
@@ -40,10 +45,12 @@ import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
 
+import { displace } from '@/helpers/displace';
+
 import SongItem from './shared/SongItem.vue';
 import SearchBar from './shared/SearchBar.vue';
 import ContextMenu from './shared/ContextMenu.vue';
-import { displace } from '../helpers/displace';
+import AddSongToAlbum from './shared/AddSongToAlbum.vue';
 
 interface CData {
   allSongs: SongData[] | null;
@@ -52,6 +59,7 @@ interface CData {
   posx: number;
   posy: number;
   index: number;
+  addSongToAlbumSong: SongData | null;
 }
 
 interface CMethods {
@@ -84,7 +92,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
       {
         icon: 'playlist-plus-icon',
         title: 'Add to Album',
-        handler: 'addtoalbum',
+        handler: 'addToAlbum',
       },
       {
         icon: 'heart-icon',
@@ -101,6 +109,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     posx: -200,
     posy: -200,
     index: -1,
+    addSongToAlbumSong: null,
   }),
   methods: {
     ...mapMutations('queue', ['enqueue']),
@@ -111,10 +120,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
     addToAlbum() {
       if (this.songs === null) throw new Error('No Songs');
-      console.log('TODO ADD TO ALBUM', {
-        index: this.index,
-        song: this.songs[this.index],
-      });
+      this.addSongToAlbumSong = this.songs[this.index];
       this.reset();
     },
     toggleLike() {
@@ -188,6 +194,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     SongItem,
     SearchBar,
     ContextMenu,
+    AddSongToAlbum,
   },
 });
 </script>
