@@ -1,26 +1,38 @@
 import { ipcRenderer, remote } from 'electron';
 import { ActionTree, MutationTree } from 'vuex';
 import path from 'path';
+// import { promises as fs } from 'fs';
 
 import logo from '@/assets/logo.png';
 import updateAlbum from '@/helpers/updateAlbum';
+import { Tables } from '@/helpers/database_functions';
 
-import { RootState, DataState } from '../types';
+import { RootState } from './types';
 
 const { app } = remote;
 
+interface AddCustomAlbumPayload {
+  name: string;
+  songs: string[];
+}
+
+interface AddSongToAlbumPayload {
+  album: CustomAlbumData;
+  song: SongData;
+}
+
 // Rerender data when db data changes
-const state: DataState = {
+const state = {
   updater: false,
 };
 
-const mutations: MutationTree<DataState> = {
+const mutations: MutationTree<RootState> = {
   update(state) {
     state.updater = !state.updater;
   },
 };
 
-const actions: ActionTree<DataState, RootState> = {
+const actions: ActionTree<RootState, RootState> = {
   async downloadSong({ rootState, commit }, napsterSong: NapsterSongData) {
     try {
       console.log('Downloading', napsterSong.title);
@@ -84,11 +96,68 @@ const actions: ActionTree<DataState, RootState> = {
       });
     }
   },
+  async deleteSong({ commit }, song: SongData) {
+    // TODO uncomment delete file code
+    // const data = { numSongs: await window.db.getNumSongs(song.albumId) - 1};
+
+    // await Promise.all([
+    //   fs.unlink(song.filePath);
+    //   window.db.deleteSong(song.title),
+    //   window.db.update(
+    //     Tables.Albums,
+    //     data,
+    //     'id LIKE ?',
+    //     [song.albumId],
+    //   ),
+    // ]);
+
+    // await window.db.deleteEmptyAlbums();
+
+    commit('queue/removeSong', song);
+    commit('update', undefined, { root: true });
+  },
+  async toggleLiked({ commit }, song: SongData) {
+    await window.db.update(
+      Tables.Songs,
+      { liked: song.liked ? 0 : 1 }, // invert liked
+      'title LIKE ?',
+      [song.title]
+    );
+
+    commit('queue/toggleLiked', song);
+    commit('update', undefined, { root: true });
+  },
+  async addCustomAlbum({ commit }, { name, songs }: AddCustomAlbumPayload) {
+    const album: CustomAlbumData = {
+      name,
+      songs,
+      id: await window.db.nextCustomAlbumId(),
+    };
+
+    await window.db.insertCustomAlbum(album);
+
+    commit('update');
+  },
+  async editCustomAlbum({ commit }, album: CustomAlbumData) {
+    await window.db.updateCustomAlbum(album);
+    commit('update');
+  },
+  async addSongToAlbum({ commit }, { album, song }: AddSongToAlbumPayload) {
+    if (album.songs.includes(song.title)) return;
+
+    album.songs.push(song.title);
+
+    await window.db.updateCustomAlbum(album);
+    commit('update');
+  },
+  async deleteCustomAlbum({ commit }, id: string) {
+    await window.db.deleteCustomAlbum(id);
+    commit('update');
+  },
 };
 
 export default {
   state,
   mutations,
   actions,
-  namespaced: true,
 };

@@ -19,6 +19,10 @@
           <button class="btn">Play All</button>
           <button class="btn">Play Random</button>
         </div>
+        <div v-if="subtext === null" class="subbuttons">
+          <button class="btn" @click="$emit('edit')">Edit</button>
+          <button class="btn del" @click="$emit('delete')">Delete</button>
+        </div>
       </section>
       <section class="songs">
         <song-item
@@ -39,6 +43,8 @@
 import Vue from 'vue';
 import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
+// import PencilIcon from 'vue-material-design-icons/Pencil.vue';
+// import DeleteIcon from 'vue-material-design-icons/Delete.vue';
 
 import { displace } from '@/helpers/displace';
 
@@ -201,6 +207,19 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
 
   .subtext {
     color: $subtext;
+  }
+
+  .del {
+    background: #a71e1e;
+  }
+
+  .subbuttons {
+    @include flex-box;
+
+    button {
+      margin: 0.5ch;
+      width: 9ch;
+    }
   }
 
   .button-bar {

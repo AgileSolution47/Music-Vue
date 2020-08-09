@@ -5,10 +5,6 @@ export interface ApiKeysState {
   firestoreAppId?: string | null;
 }
 
-export interface DataState {
-  updater: boolean;
-}
-
 export interface SearchResultsState {
   results: NapsterSongData[];
   error: any;
@@ -26,8 +22,8 @@ export interface SettingsState {
 }
 
 export interface RootState {
+  updater: boolean;
   apiKeys: ApiKeysState;
-  data: DataState;
   searchResults: SearchResultsState;
   settings: SettingsState;
 }

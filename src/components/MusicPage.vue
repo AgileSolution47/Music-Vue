@@ -158,7 +158,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
   },
   watch: {
-    '$store.state.data.updater': function () {
+    '$store.state.updater': function () {
       this.fetchData();
     },
   },

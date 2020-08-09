@@ -58,19 +58,16 @@ export default Vue.extend<CData, CMethods, {}, CProps>({
       }
       Vue.set(this.selected, index, !this.selected[index]);
     },
-    async handleClose(cancel, title = '') {
+    async handleClose(cancel, name = '') {
       if (!cancel) {
         const albumNames = (await window.db.getCustomAlbums()).map(a => a.name);
-        if (albumNames.includes(title)) {
+        if (albumNames.includes(name)) {
           // eslint-disable-next-line no-alert
-          alert(`${title} already exists`);
+          alert(`${name} already exists`);
           return;
         }
         const songs = this.songs.filter((_, index) => this.selected[index]).map(s => s.title);
-        console.log('ADD CUSTOM ALBUM', {
-          songs,
-          title,
-        });
+        this.$store.dispatch('addCustomAlbum', { name, songs });
       }
       this.$emit('close');
     },

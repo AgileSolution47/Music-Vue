@@ -26,7 +26,7 @@
           :title="album.name"
           :subtitle="customAlbumSubtitles[index]"
           :image="musicSymbol"
-          @left-click="$router.push({ name: '\\album-page', query: album })"
+          @left-click="$router.push({ name: '\\c-album-page', query: album })"
           @right-click="openContextMenu($event, index, true)"
         />
         <button class="plus" title="Add Custom Album" @click="showAddCustomAlbum = true">
@@ -165,7 +165,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
       this.reset();
     },
     deleteCustomAlbum() {
-      window.db.deleteCustomAlbum(this.customAlbums[this.index].id);
+      this.$store.dispatch('deleteCustomAlbum', this.customAlbums[this.index].id);
       this.reset();
     },
     openContextMenu(event, index, deletable) {
@@ -201,7 +201,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
   },
   watch: {
-    '$store.state.data.updater': function () {
+    '$store.state.updater': function () {
       this.fetchData();
     },
   },

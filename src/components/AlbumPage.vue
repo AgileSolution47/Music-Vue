@@ -1,5 +1,12 @@
 <template>
-  <song-page :songs="songs" :image="image" :title="album.name" :subtext="subtext" />
+  <song-page
+    :songs="songs"
+    :image="image"
+    :title="album.name"
+    :subtext="subtext"
+    @edit="editAlbum"
+    @delete="deleteAlbum"
+  />
 </template>
 
 <script lang="ts">
@@ -7,6 +14,7 @@ import Vue from 'vue';
 
 import musicSymbol from '@/assets/music_symbol.png';
 import generateSubtitle from '@/helpers/generateSubtitle';
+import { stringifyArr } from '@/helpers/database_functions';
 
 import SongPage from './shared/SongPage.vue';
 
@@ -16,6 +24,8 @@ interface CData {
 
 interface CMethods {
   fetchData: () => void;
+  editAlbum: () => void;
+  deleteAlbum: () => void;
 }
 
 interface CComputed {
@@ -23,19 +33,24 @@ interface CComputed {
   subtext: string | null;
 }
 
-interface CProps {
-  album: AlbumData;
-  isCustom: boolean;
+interface CADProps {
+  isCustom: true;
+  album: CustomAlbumData;
 }
 
-export default Vue.extend<CData, CMethods, CComputed, CProps>({
+interface ADProps {
+  isCustom: false;
+  album: AlbumData;
+}
+
+export default Vue.extend<CData, CMethods, CComputed, CADProps | ADProps>({
   name: 'album-page',
   data: () => ({
     songs: [],
   }),
   props: {
     album: Object,
-    isCustom: Boolean,
+    isCustom: Boolean as any, // TS doesnt like Boolean being converted to true | false
   },
   computed: {
     image() {
@@ -51,13 +66,28 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
   },
   methods: {
     fetchData() {
-      window.db.getSongs('albumId LIKE ?', [this.album.id]).then(songs => {
-        this.songs = songs;
-      });
+      if (this.isCustom) {
+        window.db.getSongs(`title IN (${stringifyArr(this.album.songs)})`).then(songs => {
+          this.songs = songs;
+        });
+      } else {
+        window.db.getSongs('albumId LIKE ?', [this.album.id]).then(songs => {
+          this.songs = songs;
+        });
+      }
+    },
+    editAlbum() {
+      if (!this.isCustom) throw new Error('Only allowed for custom albums');
+      console.log('EDIT ALBUM');
+    },
+    async deleteAlbum() {
+      if (!this.isCustom) throw new Error('Only allowed for custom albums');
+      // await this.$store.dispatch('deleteCustomAlbum', this.album.id);
+      this.$router.back();
     },
   },
   watch: {
-    '$store.state.data.updater': function () {
+    '$store.state.updater': function () {
       this.fetchData();
     },
   },

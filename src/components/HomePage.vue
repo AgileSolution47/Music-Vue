@@ -151,7 +151,6 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
     async playSong(index) {
       if (this.topSongs === null) throw new Error('No Songs');
-      console.log('PLAY SONG', index);
       const songs = await window.db.getTopSongs();
       this.enqueue({ songs: displace(songs, index) });
       this.reset();
@@ -208,7 +207,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
   },
   watch: {
-    '$store.state.data.updater': function () {
+    '$store.state.updater': function () {
       this.fetchData();
     },
   },
