@@ -177,45 +177,6 @@ export default Vue.extend<CData, CMethods, CComputed>({
   color: $accent;
 }
 
-.input {
-  border-bottom: 3px solid $primary;
-  display: block;
-  max-width: 500px;
-  margin: 0.8rem 0;
-
-  input {
-    display: inline-block;
-    width: 100%;
-    font-size: 0.9rem;
-    color: white;
-
-    &::placeholder {
-      color: #aaaaaa;
-    }
-  }
-
-  &::after {
-    content: '';
-    display: block;
-    position: relative;
-    left: 50%;
-    width: 0%;
-    transform: translate(-50%, 3px);
-    height: 3px;
-    background-color: $accent;
-    transition: 0.3s;
-  }
-
-  &.errored {
-    border-color: red;
-  }
-
-  &:focus-within::after,
-  &:hover::after {
-    width: 100%;
-  }
-}
-
 h4 {
   font-size: 1.5rem;
   margin-top: 2rem;

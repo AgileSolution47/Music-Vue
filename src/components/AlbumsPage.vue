@@ -1,6 +1,7 @@
 <template>
   <div class="scroll-el" id="scroll-el" key="albums">
     <div class="page">
+      <add-custom-album :show="showAddCustomAlbum" @close="showAddCustomAlbum = false" />
       <context-menu
         :items="items"
         :posx="posx"
@@ -28,7 +29,7 @@
           @left-click="$router.push({ name: '\\album-page', query: album })"
           @right-click="openContextMenu($event, index, true)"
         />
-        <button class="plus" title="Add Custom Album">
+        <button class="plus" title="Add Custom Album" @click="showAddCustomAlbum = true">
           <plus-icon />
         </button>
       </ul>
@@ -60,6 +61,7 @@ import likedImage from '@/assets/liked.png';
 
 import CoverImage from './shared/CoverImage.vue';
 import ContextMenu from './shared/ContextMenu.vue';
+import AddCustomAlbum from './shared/AddCustomAlbum.vue';
 
 interface CData {
   musicSymbol: string;
@@ -73,6 +75,7 @@ interface CData {
   customAlbumItems: ContextMenuItem[];
   items: ContextMenuItem[];
   index: number;
+  showAddCustomAlbum: boolean;
 }
 
 interface CMethods {
@@ -100,6 +103,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     customAlbums: [],
     posx: -200,
     posy: -200,
+    showAddCustomAlbum: false,
     albumItems: [
       {
         icon: 'playlist-play-icon',
@@ -208,6 +212,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     PlusIcon,
     CoverImage,
     ContextMenu,
+    AddCustomAlbum,
   },
 });
 </script>

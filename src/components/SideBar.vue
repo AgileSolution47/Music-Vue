@@ -179,7 +179,7 @@ export default Vue.extend<CData, {}, CComputed>({
   transition: width 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
   width: 4rem;
   height: 100vh;
-  z-index: 2;
+  z-index: 3;
   background: $secondary;
   overflow: hidden;
 

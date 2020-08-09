@@ -159,13 +159,6 @@ export default Vue.extend<CData, {}, CComputed>({
       return formatLength(this.currentTime, this.current.length).join(' / ');
     },
   },
-  mounted() {
-    window.addEventListener('keydown', e => {
-      if (e.keyCode === 69) {
-        this.playingSongs = !this.playingSongs;
-      }
-    });
-  },
   components: {
     PlayPause,
     FastForwardIcon,

@@ -51,7 +51,7 @@ $curve: cubic-bezier(0.215, 0.61, 0.355, 1);
     &-enter-active {
       animation: zoom1 $dur/2 $curve forwards;
       overflow: hidden;
-      z-index: 100000;
+      z-index: 3;
     }
 
     &-leave-active {
@@ -67,7 +67,7 @@ $curve: cubic-bezier(0.215, 0.61, 0.355, 1);
 
     &-leave-active {
       animation: zoom1 $dur/2 $curve reverse forwards;
-      z-index: 100000;
+      z-index: 3;
     }
   }
 }
