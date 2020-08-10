@@ -243,7 +243,7 @@ export default Vue.extend<CData, CMethods, CComputed, CProps>({
 .songs {
   width: calc(95% - 400px - 1.5rem);
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: calc(2rem + var(--extra-padding));
 }
 
 @media screen and (max-width: 1000px) {

@@ -153,7 +153,7 @@ export default Vue.extend<{}, CMethods, SettingsState>({
   background: $btncol;
   padding: 0.75rem 1.5rem;
   transition: background-color 0.3s linear;
-  border-radius: 0.3rem;
+  border-radius: 3rem;
 
   &:hover {
     background-color: lighten($btncol, 10%);

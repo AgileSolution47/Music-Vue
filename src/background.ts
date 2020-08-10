@@ -1,7 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import path from 'path';
 
 import { YtDownloader, downloadImage } from './downloader';
+import createMenu from './menu';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -9,9 +10,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 app.setPath('userData', path.join(app.getPath('appData'), 'Music'));
 app.allowRendererProcessReuse = true;
 
+const resources = process.env.WEBPACK_DEV_SERVER_URL
+  ? path.join(app.getAppPath(), '../public')
+  : __dirname;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win: BrowserWindow | null;
+let win: BrowserWindow | null = null;
+let help: BrowserWindow | null = null;
 let downloader: YtDownloader;
 
 function createWindow() {
@@ -20,7 +26,7 @@ function createWindow() {
     darkTheme: true,
     width: 1260,
     height: 875,
-    icon: path.join(app.getAppPath(), 'resources', 'logo.png'),
+    icon: path.join(resources, 'logo.png'),
     title: 'Music',
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -39,6 +45,13 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL(`file://${__dirname}/index.html`);
   }
+
+  createMenu(win, isDevelopment, toggleHelp);
+
+  globalShortcut.register('MediaPlayPause', () => win?.webContents.send('pause-play', false));
+  globalShortcut.register('MediaNextTrack', () => win?.webContents.send('next-track'));
+  globalShortcut.register('MediaPreviousTrack', () => win?.webContents.send('prev-track'));
+  globalShortcut.register('MediaStop', () => win?.webContents.send('stop-track'));
 
   win.on('closed', () => {
     win = null;
@@ -117,3 +130,21 @@ ipcMain.on('download:init', (_, path: string) => {
 ipcMain.on('download:update-base-path', (_, path: string) => {
   downloader.changeBasePath(path);
 });
+
+const toggleHelp = () => {
+  if (help === null) {
+    help = new BrowserWindow({
+      width: 1000,
+      height: 800,
+      icon: path.join(resources, 'logo.png'),
+    });
+
+    help.on('closed', () => {
+      help = null;
+    });
+
+    help.loadURL(`file://${path.join(resources, 'help.html')}`);
+  } else {
+    help.close();
+  }
+};

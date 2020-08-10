@@ -1,5 +1,9 @@
 @import './vars.scss';
 
+:root {
+  --extra-padding: 0;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -38,6 +42,7 @@
 
 .page {
   padding: 2rem calc(5% + 1.5rem);
+  padding-bottom: calc(2rem + var(--extra-padding));
   padding-top: 4.5rem;
   max-width: 1200px;
   margin: 0 auto;
