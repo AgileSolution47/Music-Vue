@@ -31,15 +31,6 @@
       <setting-item name="Animate between pages">
         <toggle-button :toggled="animations" @toggle="toggleAnimations" />
       </setting-item>
-      <hr />
-      <setting-item name="Backup and Restore Data">
-        <div>
-          <button class="change" @click="importData" style="margin-right: 0.3rem;">
-            Import Data
-          </button>
-          <button class="change" @click="exportData">Export Data</button>
-        </div>
-      </setting-item>
     </div>
   </div>
 </template>
@@ -65,8 +56,6 @@ interface CMethods {
   changeJumpAhead: (delta: number) => void;
   updateChanges: () => Promise<void>;
   changeDirectory: () => Promise<void>;
-  importData: () => void;
-  exportData: () => void;
 }
 
 interface CComputed {
@@ -116,12 +105,6 @@ export default Vue.extend<{}, CMethods, SettingsState>({
         ipcRenderer.emit('download:update-base-path', filePaths[0]);
         this.$store.commit('settings/setFolderStored', filePaths[0]);
       }
-    },
-    importData() {
-      console.log('TODO: Import Data');
-    },
-    exportData() {
-      console.log('TODO: Export Data');
     },
   },
 });

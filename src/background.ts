@@ -18,6 +18,7 @@ const resources = process.env.WEBPACK_DEV_SERVER_URL
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null = null;
 let help: BrowserWindow | null = null;
+let remote: BrowserWindow | null = null;
 let downloader: YtDownloader;
 
 function createWindow() {
@@ -148,3 +149,55 @@ const toggleHelp = () => {
     help.close();
   }
 };
+
+const setUpRemote = (song: SongData) => {
+  remote = new BrowserWindow({
+    width: 500,
+    height: 105,
+    resizable: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      webSecurity: !isDevelopment,
+    },
+    icon: path.join(resources, 'logo.png'),
+    frame: false,
+  });
+
+  remote.on('closed', () => (remote = null));
+
+  remote.loadURL('file://' + path.join(resources, 'remote.html'));
+
+  ipcMain.on('remote-ready', () => {
+    remote?.webContents.send('song-update', song);
+  });
+};
+
+// Methods to handle the remote controller
+ipcMain.on('toggle-remote', (evt, song: SongData) => {
+  if (!song && remote) {
+    remote.close();
+  } else if (song && !remote) {
+    setUpRemote(song);
+  }
+});
+
+ipcMain.on('main-song-update', (evt, song: SongData) => {
+  remote?.webContents.send('song-update', song);
+});
+
+ipcMain.on('main-play-pause', (evt, isPaused) => {
+  remote?.webContents.send('song-pause-play', isPaused);
+});
+
+ipcMain.on('remote-prev', () => {
+  win?.webContents.send('prev-track', true);
+});
+
+ipcMain.on('remote-next', () => {
+  win?.webContents.send('next-track');
+});
+
+ipcMain.on('remote-pause-play', () => {
+  win?.webContents.send('pause-play');
+});

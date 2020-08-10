@@ -131,6 +131,8 @@ interface CMethods {
   toggleShuffle: () => void;
   toggleLoop: () => void;
   logError: (error: any) => void;
+  addListeners: () => void;
+  removeListeners: () => void;
 }
 
 interface CComputed {
@@ -146,13 +148,14 @@ interface CComputed {
   seekAhead: number;
   seekBack: number;
   jumpBack: number;
+  controlWindow: boolean;
 }
 
 export default Vue.extend<CData, CMethods, CComputed>({
   name: 'player-bar',
   data: () => ({
-    playing: localStorage.getItem('playing') !== 'false',
-    currentTime: parseInt(localStorage.getItem('currentTime') ?? '0', 10),
+    playing: true,
+    currentTime: 0,
     showAddSongToAlbum: false,
   }),
   methods: {
@@ -168,11 +171,62 @@ export default Vue.extend<CData, CMethods, CComputed>({
       } else {
         (this.$refs.audio as HTMLAudioElement).pause();
       }
+
+      if (this.controlWindow) {
+        ipcRenderer.send('main-play-pause', !this.playing);
+      }
+    },
+    addListeners() {
+      ipcRenderer.on('jump-back', () => {
+        (this.$refs.audio as HTMLAudioElement).currentTime -= this.jumpBack;
+      });
+      ipcRenderer.on('seek-back', () => {
+        (this.$refs.audio as HTMLAudioElement).currentTime -= this.seekBack;
+      });
+      ipcRenderer.on('seek-ahead', () => {
+        (this.$refs.audio as HTMLAudioElement).currentTime += this.seekAhead;
+      });
+      ipcRenderer.on('jump-ahead', () => {
+        (this.$refs.audio as HTMLAudioElement).currentTime += this.jumpAhead;
+      });
+      ipcRenderer.on('volume++', () => {
+        (this.$refs.audio as HTMLAudioElement).volume += 0.05;
+      });
+      ipcRenderer.on('volume--', () => {
+        (this.$refs.audio as HTMLAudioElement).volume -= 0.05;
+      });
+      ipcRenderer.on('loop-song', () => {
+        this.toggleLoop();
+      });
+      ipcRenderer.on('shuffle-songs', () => {
+        this.toggleShuffle();
+      });
+      ipcRenderer.on('prev-track', () => this.prevSong());
+      ipcRenderer.on('next-track', () => this.nextSong());
+      ipcRenderer.on('stop-track', () => this.dequeue());
+      ipcRenderer.on('pause-play', () => {
+        if (document.activeElement?.tagName === 'INPUT') return;
+        this.togglePlay();
+      });
+    },
+    removeListeners() {
+      ipcRenderer.removeAllListeners('jump-back');
+      ipcRenderer.removeAllListeners('seek-back');
+      ipcRenderer.removeAllListeners('seek-ahead');
+      ipcRenderer.removeAllListeners('jump-ahead');
+      ipcRenderer.removeAllListeners('volume++');
+      ipcRenderer.removeAllListeners('volume--');
+      ipcRenderer.removeAllListeners('loop-song');
+      ipcRenderer.removeAllListeners('shuffle-songs');
+      ipcRenderer.removeAllListeners('prev-track');
+      ipcRenderer.removeAllListeners('next-track');
+      ipcRenderer.removeAllListeners('stop-track');
+      ipcRenderer.removeAllListeners('pause-play');
     },
   },
   computed: {
     ...mapState('queue', ['queue', 'index', 'loop', 'shuffle']),
-    ...mapState('settings', ['jumpAhead', 'seekAhead', 'seekBack', 'jumpBack']),
+    ...mapState('settings', ['jumpAhead', 'seekAhead', 'seekBack', 'jumpBack', 'controlWindow']),
     current() {
       return this.queue[this.index];
     },
@@ -187,44 +241,16 @@ export default Vue.extend<CData, CMethods, CComputed>({
     },
   },
   mounted() {
-    const currentTime = parseInt(localStorage.getItem('currentTime') ?? '0', 10);
-    if (currentTime !== -1) {
-      (this.$refs.audio as HTMLAudioElement).currentTime = currentTime;
-    } else {
-      this.playing = true;
-    }
+    if (this.playingSongs) {
+      this.playing = localStorage.getItem('playing') !== 'false';
+      this.currentTime = parseInt(localStorage.getItem('currentTime') ?? '0', 10);
+      (this.$refs.audio as HTMLAudioElement).currentTime = this.currentTime;
+      this.addListeners();
 
-    ipcRenderer.on('jump-back', () => {
-      (this.$refs.audio as HTMLAudioElement).currentTime -= this.jumpBack;
-    });
-    ipcRenderer.on('seek-back', () => {
-      (this.$refs.audio as HTMLAudioElement).currentTime -= this.seekBack;
-    });
-    ipcRenderer.on('seek-ahead', () => {
-      (this.$refs.audio as HTMLAudioElement).currentTime += this.seekAhead;
-    });
-    ipcRenderer.on('jump-ahead', () => {
-      (this.$refs.audio as HTMLAudioElement).currentTime += this.jumpAhead;
-    });
-    ipcRenderer.on('volume++', () => {
-      (this.$refs.audio as HTMLAudioElement).volume += 0.05;
-    });
-    ipcRenderer.on('volume--', () => {
-      (this.$refs.audio as HTMLAudioElement).volume -= 0.05;
-    });
-    ipcRenderer.on('loop-song', () => {
-      this.toggleLoop();
-    });
-    ipcRenderer.on('shuffle-songs', () => {
-      this.toggleShuffle();
-    });
-    ipcRenderer.on('prev-track', () => this.prevSong());
-    ipcRenderer.on('next-track', () => this.nextSong());
-    ipcRenderer.on('stop-track', () => this.dequeue());
-    ipcRenderer.on('pause-play', () => {
-      if (document.activeElement?.tagName === 'INPUT') return;
-      this.togglePlay();
-    });
+      if (this.controlWindow) {
+        ipcRenderer.send('toggle-remote', this.current);
+      }
+    }
   },
   watch: {
     playing(newPlaying: boolean) {
@@ -237,8 +263,35 @@ export default Vue.extend<CData, CMethods, CComputed>({
       if (!newPlayingSongs) {
         document.documentElement.style.setProperty('--extra-padding', '0px');
         localStorage.setItem('currentTime', '-1');
+        this.removeListeners();
+
+        if (this.controlWindow) {
+          ipcRenderer.send('toggle-remote');
+        }
       } else {
         document.documentElement.style.setProperty('--extra-padding', '4rem');
+        this.addListeners();
+
+        if (this.controlWindow) {
+          ipcRenderer.send('toggle-remote', this.current);
+        }
+      }
+    },
+    current() {
+      this.currentTime = 0;
+      this.playing = true;
+
+      if (this.controlWindow && this.current) {
+        ipcRenderer.send('main-song-update', this.current);
+      }
+    },
+    controlWindow(newControlWindow) {
+      if (this.current) {
+        if (newControlWindow) {
+          ipcRenderer.send('toggle-remote', this.current);
+        } else {
+          ipcRenderer.send('toggle-remote');
+        }
       }
     },
   },

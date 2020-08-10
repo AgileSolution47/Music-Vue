@@ -3,16 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <title>Music Player</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200,300,400&display=swap" />
     <style>
       * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
         color: white;
-        font-family: Raleway;
+        font-family: sans-serif;
       }
-     
+
       html {
         height: 100vh;
         width: 100vw;
@@ -21,7 +20,7 @@
       body {
         width: 100%;
         height: 100%;
-        background: rgb(39, 39, 39);
+        background: #141414;
         display: flex;
         justify-content: space-around;
         align-items: center;
@@ -78,20 +77,41 @@
         <polygon fill="white" points="60,0 120,50 60,100"></polygon>
       </svg>
       <svg id="pause-play" viewBox="0 0 80 100">
-        <polygon fill="white" points="0,0 25,0 25,100 0,100">
-          <animate begin="indefinite" attributeName="points" dur="100ms" fill="freeze" id="box1-pause" to="0,0 30,18.75 30,81.25 0,100" />
-          <animate begin="indefinite" attributeName="points" dur="100ms" fill="freeze" id="box1-play" to="0,0 25,0 25,100 0,100" />
-        </polygon>
-        <polygon fill="white" points="55,0 80,0 80,100 55,100">
+        <polygon fill="white" points="0,0 26.6,0 26.6,100 0,100">
           <animate
+            id="box1-pause"
             begin="indefinite"
-            id="box2-pause"
             attributeName="points"
-            dur="100ms"
+            dur="150ms"
             fill="freeze"
-            to="30,18.75 80,50 80,50  30,81.25"
+            to="0,0 26.6,0 26.6,100 0,100"
           />
-          <animate begin="indefinite" id="box2-play" attributeName="points" fill="freeze" dur="100ms" to="55,0 80,0 80,100 55,100" />
+          <animate
+            id="box1-play"
+            begin="indefinite"
+            attributeName="points"
+            dur="150ms"
+            fill="freeze"
+            to="80,50 80,50 0,50 0,0"
+          />
+        </polygon>
+        <polygon fill="white" points="53.4,0 80,0 80,100 53.4,100">
+          <animate
+            id="box2-pause"
+            begin="indefinite"
+            attributeName="points"
+            dur="150ms"
+            fill="freeze"
+            to="53.4,0 80,0 80,100 53.4,100"
+          />
+          <animate
+            id="box2-play"
+            begin="indefinite"
+            attributeName="points"
+            fill="freeze"
+            dur="150ms"
+            to="80,50 80,50 0,100 0,50"
+          />
         </polygon>
       </svg>
       <svg viewBox="0 0 120 100" id="next">
@@ -103,52 +123,51 @@
     <img class="background-img" id="bg-img" src="http://placekitten.com/200/200" alt="image" />
 
     <script>
-      const { ipcRenderer } = window.require("electron");
+      const { ipcRenderer } = window.require('electron');
 
-      const p = document.getElementById("title");
-      const thumbnail = document.getElementById("thumbnail");
-      const bgImg = document.getElementById("bg-img");
+      const p = document.getElementById('title');
+      const thumbnail = document.getElementById('thumbnail');
+      const bgImg = document.getElementById('bg-img');
+
       let paused = false;
 
-      document.getElementById("prev").addEventListener("click", () => {
-        ipcRenderer.send("remote-prev");
+      document.getElementById('prev').addEventListener('click', () => {
+        ipcRenderer.send('remote-prev');
       });
 
-      document.getElementById("next").addEventListener("click", () => {
-        ipcRenderer.send("remote-next");
+      document.getElementById('next').addEventListener('click', () => {
+        ipcRenderer.send('remote-next');
       });
 
-      const pausePlay = document.getElementById("pause-play");
-      pausePlay.addEventListener("click", () => {
-        if (paused) {
-          document.getElementById("box1-play").beginElement();
-          document.getElementById("box2-play").beginElement();
-        } else {
-          document.getElementById("box1-pause").beginElement();
-          document.getElementById("box2-pause").beginElement();
-        }
-        ipcRenderer.send("remote-pause-play");
-        paused = !paused;
+      const pausePlay = document.getElementById('pause-play');
+      pausePlay.addEventListener('click', () => {
+        ipcRenderer.send('remote-pause-play');
       });
 
-      ipcRenderer.on("song-update", (evt, song) => {
+      ipcRenderer.on('song-update', (evt, song) => {
         thumbnail.src = song.thumbnail;
         bgImg.src = song.thumbnail;
         p.innerText = song.title;
-      });
-
-      ipcRenderer.on("song-pause-play", (evt, isPaused) => {
-        paused = isPaused;
         if (paused) {
-          document.getElementById("box1-pause").beginElement();
-          document.getElementById("box2-pause").beginElement();
-        } else {
-          document.getElementById("box1-play").beginElement();
-          document.getElementById("box2-play").beginElement();
+          paused = false;
+          document.getElementById('box1-play').beginElement();
+          document.getElementById('box2-play').beginElement();
         }
       });
 
-      document.addEventListener("DOMContentLoaded", () => ipcRenderer.send("remote-ready"));
+      ipcRenderer.on('song-pause-play', (evt, isPaused) => {
+        paused = isPaused;
+
+        if (isPaused) {
+          document.getElementById('box1-play').beginElement();
+          document.getElementById('box2-play').beginElement();
+        } else {
+          document.getElementById('box1-pause').beginElement();
+          document.getElementById('box2-pause').beginElement();
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => ipcRenderer.send('remote-ready'));
     </script>
   </body>
 </html>

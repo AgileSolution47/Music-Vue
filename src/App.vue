@@ -12,9 +12,10 @@
         </div>
       </header>
       <div>
-        <transition :name="transitionName">
+        <transition v-if="animations" :name="transitionName">
           <router-view></router-view>
         </transition>
+        <router-view v-else />
       </div>
       <player-bar />
     </main>
@@ -24,8 +25,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { debounce } from 'lodash';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { Route } from 'vue-router';
+import { remote } from 'electron';
 
 import SideBar from './components/SideBar.vue';
 import PlayerBar from './components/PlayerBar.vue';
@@ -61,6 +63,7 @@ interface CMethods {
 interface CComputed {
   apiKeysValid: boolean;
   pageTitle: string;
+  animations: boolean;
 }
 
 export default Vue.extend<CData, CMethods, CComputed>({
@@ -75,6 +78,12 @@ export default Vue.extend<CData, CMethods, CComputed>({
     window.store = this.$store;
     // eslint-disable-next-line no-unused-expressions
     document.getElementById('scroll-el')?.addEventListener('scroll', this.onScroll);
+    window.onkeydown = (e: KeyboardEvent) => {
+      if (e.keyCode === 32) {
+        e.preventDefault();
+        remote.getCurrentWebContents().send('pause-play');
+      }
+    };
     if (!this.apiKeysValid && this.$route.path !== '/register-keys') {
       this.$router.push('/register-keys');
     }
@@ -118,6 +127,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     ...mapGetters('apiKeys', {
       apiKeysValid: 'valid',
     }),
+    ...mapState('settings', ['animations']),
     pageTitle() {
       return (this.$route.name?.charAt(0) === '\\' ? '' : this.$route.name) ?? '';
     },
