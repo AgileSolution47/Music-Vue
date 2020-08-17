@@ -1,3 +1,5 @@
+import { SyncStatus } from '@/helpers/firestore_sync/sync_status';
+
 export interface ApiKeysState {
   napster: string | null;
   firestoreApiKey: string | null;
@@ -21,11 +23,8 @@ export interface SettingsState {
   hasChanges: boolean;
 }
 
-export interface RootState {
-  updater: boolean;
-  apiKeys: ApiKeysState;
-  searchResults: SearchResultsState;
-  settings: SettingsState;
+export interface SyncState {
+  status: SyncStatus;
 }
 
 export interface QueueState {
@@ -34,4 +33,12 @@ export interface QueueState {
   index: number;
   shuffle: boolean;
   loop: boolean;
+}
+
+export interface RootState {
+  updater: boolean;
+  apiKeys: ApiKeysState;
+  searchResults: SearchResultsState;
+  settings: SettingsState;
+  sync: SyncState;
 }

@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from 'electron';
 import { ActionTree, MutationTree } from 'vuex';
 import path from 'path';
-// import { promises as fs } from 'fs';
+import { promises as fs } from 'fs';
 
 import logo from '@/assets/logo.png';
 import updateAlbum from '@/helpers/updateAlbum';
@@ -72,7 +72,7 @@ const actions: ActionTree<RootState, RootState> = {
 
       console.log('Downloaded', song.title);
 
-      await updateAlbum(song.albumId);
+      await updateAlbum(song.albumId, rootState.apiKeys.napster ?? '');
       await window.db.insertSong(song);
 
       new Notification(song.title, {
@@ -97,21 +97,15 @@ const actions: ActionTree<RootState, RootState> = {
     }
   },
   async deleteSong({ commit }, song: SongData) {
-    // TODO uncomment delete file code
-    // const data = { numSongs: await window.db.getNumSongs(song.albumId) - 1};
+    const data = { numSongs: (await window.db.getNumSongs(song.albumId)) - 1 };
 
-    // await Promise.all([
-    //   fs.unlink(song.filePath);
-    //   window.db.deleteSong(song.title),
-    //   window.db.update(
-    //     Tables.Albums,
-    //     data,
-    //     'id LIKE ?',
-    //     [song.albumId],
-    //   ),
-    // ]);
+    await Promise.all([
+      fs.unlink(song.filePath),
+      window.db.deleteSong(song.title),
+      window.db.update(Tables.Albums, data, 'id LIKE ?', [song.albumId]),
+    ]);
 
-    // await window.db.deleteEmptyAlbums();
+    await window.db.deleteEmptyAlbums();
 
     commit('queue/removeSong', song);
     commit('update', undefined, { root: true });

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import path from 'path';
 
@@ -21,6 +22,77 @@ let help: BrowserWindow | null = null;
 let remote: BrowserWindow | null = null;
 let downloader: YtDownloader;
 
+const toggleHelp = () => {
+  if (help === null) {
+    help = new BrowserWindow({
+      width: 1000,
+      height: 800,
+      icon: path.join(resources, 'logo.png'),
+    });
+
+    help.on('closed', () => {
+      help = null;
+    });
+
+    help.loadURL(`file://${path.join(resources, 'help.html')}`);
+  } else {
+    help.close();
+  }
+};
+
+const setUpRemote = (song: SongData) => {
+  remote = new BrowserWindow({
+    width: 500,
+    height: 105,
+    resizable: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      webSecurity: !isDevelopment,
+    },
+    icon: path.join(resources, 'logo.png'),
+    frame: false,
+  });
+
+  remote.on('closed', () => {
+    remote = null;
+  });
+
+  remote.loadURL(`file://${path.join(resources, 'remote.html')}`);
+
+  ipcMain.on('remote-ready', () => {
+    remote?.webContents.send('song-update', song);
+  });
+};
+
+// Methods to handle the remote controller
+ipcMain.on('toggle-remote', (evt, song: SongData) => {
+  if (!song && remote) {
+    remote.close();
+  } else if (song && !remote) {
+    setUpRemote(song);
+  }
+});
+
+ipcMain.on('main-song-update', (evt, song: SongData) => {
+  remote?.webContents.send('song-update', song);
+});
+
+ipcMain.on('main-play-pause', (evt, isPaused) => {
+  remote?.webContents.send('song-pause-play', isPaused);
+});
+
+ipcMain.on('remote-prev', () => {
+  win?.webContents.send('prev-track', true);
+});
+
+ipcMain.on('remote-next', () => {
+  win?.webContents.send('next-track');
+});
+
+ipcMain.on('remote-pause-play', () => {
+  win?.webContents.send('pause-play');
+});
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
@@ -111,7 +183,35 @@ if (isDevelopment) {
 ipcMain.handle('download:image', (_, albumId: string) => downloadImage(albumId));
 
 ipcMain.handle('download:song', async (_, song: NapsterSongData) => {
-  const details = await downloader.download(song.title, song.artist, song.albumId);
+  const details = await downloader.download(song.title, song.artist, song.albumId, 'download');
+  await details.download;
+
+  delete details.download;
+
+  return details;
+});
+
+ipcMain.handle('firestore-download:song', async (_, song: FirestoreSongData) => {
+  const { artist, title, albumId } = song;
+
+  const ytData = await downloader.getYoutubeData(title, artist);
+
+  if (song.youtubeId.length > 0) {
+    ytData.unshift({
+      artist,
+      duration: song.length,
+      id: song.youtubeId,
+      title,
+    });
+  }
+
+  const details = await downloader.downloadWithData(
+    ytData,
+    albumId,
+    path.join(downloader.basePath, `${title}.mp3`),
+    'firestore-download'
+  );
+
   await details.download;
 
   delete details.download;
@@ -122,82 +222,12 @@ ipcMain.handle('download:song', async (_, song: NapsterSongData) => {
 ipcMain.on('download:init', (_, path: string) => {
   downloader = new YtDownloader(path);
 
-  downloader.onProgress(progress => {
+  downloader.onProgress((progress, channel) => {
     // eslint-disable-next-line no-unused-expressions
-    win?.webContents.send('download:progress', progress);
+    win?.webContents.send(`${channel}:progress`, progress);
   });
 });
 
 ipcMain.on('download:update-base-path', (_, path: string) => {
   downloader.changeBasePath(path);
-});
-
-const toggleHelp = () => {
-  if (help === null) {
-    help = new BrowserWindow({
-      width: 1000,
-      height: 800,
-      icon: path.join(resources, 'logo.png'),
-    });
-
-    help.on('closed', () => {
-      help = null;
-    });
-
-    help.loadURL(`file://${path.join(resources, 'help.html')}`);
-  } else {
-    help.close();
-  }
-};
-
-const setUpRemote = (song: SongData) => {
-  remote = new BrowserWindow({
-    width: 500,
-    height: 105,
-    resizable: false,
-    alwaysOnTop: true,
-    webPreferences: {
-      nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
-      webSecurity: !isDevelopment,
-    },
-    icon: path.join(resources, 'logo.png'),
-    frame: false,
-  });
-
-  remote.on('closed', () => (remote = null));
-
-  remote.loadURL('file://' + path.join(resources, 'remote.html'));
-
-  ipcMain.on('remote-ready', () => {
-    remote?.webContents.send('song-update', song);
-  });
-};
-
-// Methods to handle the remote controller
-ipcMain.on('toggle-remote', (evt, song: SongData) => {
-  if (!song && remote) {
-    remote.close();
-  } else if (song && !remote) {
-    setUpRemote(song);
-  }
-});
-
-ipcMain.on('main-song-update', (evt, song: SongData) => {
-  remote?.webContents.send('song-update', song);
-});
-
-ipcMain.on('main-play-pause', (evt, isPaused) => {
-  remote?.webContents.send('song-pause-play', isPaused);
-});
-
-ipcMain.on('remote-prev', () => {
-  win?.webContents.send('prev-track', true);
-});
-
-ipcMain.on('remote-next', () => {
-  win?.webContents.send('next-track');
-});
-
-ipcMain.on('remote-pause-play', () => {
-  win?.webContents.send('pause-play');
 });

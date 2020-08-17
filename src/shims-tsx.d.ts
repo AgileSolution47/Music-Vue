@@ -1,5 +1,6 @@
 import Vue, { VNode } from 'vue';
 import DatabaseFunctions from './helpers/database_functions';
+import FirestoreSync from './helpers/firestore_sync';
 
 declare global {
   namespace JSX {
@@ -13,8 +14,8 @@ declare global {
   }
 
   interface Window {
-    store: any;
     db: DatabaseFunctions;
+    syncDB?: FirestoreSync;
   }
 
   type obj = {
@@ -51,6 +52,16 @@ declare global {
     liked: 1 | 0;
   };
 
+  type FirestoreSongData = {
+    albumId: string;
+    artist: string;
+    title: string;
+    liked: boolean;
+    numListens: number;
+    length: number;
+    youtubeId: string;
+  };
+
   type AlbumBaseData = {
     id: string;
     name: string;
@@ -62,9 +73,16 @@ declare global {
     artist: string;
   };
 
+  type FirestoreAlbumData = AlbumBaseData & {
+    numSongs: number;
+    artist: string;
+  };
+
   type CustomAlbumData = AlbumBaseData & {
     songs: string[];
   };
+
+  type FirestoreCustomAlbumData = CustomAlbumData;
 
   type DBCustomAlbumData = AlbumBaseData & {
     songs: string;

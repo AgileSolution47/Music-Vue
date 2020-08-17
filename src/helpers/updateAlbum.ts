@@ -6,11 +6,12 @@ const { app } = remote;
 
 const getAlbumInfo = async (
   albumId: string,
+  napsterKey: string
 ): Promise<{ id: string; name: string; artist: string }> => {
   try {
     const response = await axios.get(`https://api.napster.com/v2.2/albums/${albumId}`, {
       params: {
-        apikey: window.store.state.apiKeys.napster,
+        apikey: napsterKey,
       },
     });
 
@@ -29,11 +30,11 @@ const getAlbumInfo = async (
   }
 };
 
-const updateAlbum = async (albumId: string) => {
+const updateAlbum = async (albumId: string, napsterKey: string) => {
   const imagePath = `file://${path.join(
     app.getPath('userData'),
     'album_images',
-    `${albumId}.jpg`,
+    `${albumId}.jpg`
   )}`;
 
   let numSongs = await window.db.getNumSongs(albumId);
@@ -47,7 +48,7 @@ const updateAlbum = async (albumId: string) => {
     return;
   }
 
-  const { id, name, artist } = await getAlbumInfo(albumId);
+  const { id, name, artist } = await getAlbumInfo(albumId, napsterKey);
 
   if (albumId !== id) {
     throw new Error(`Failed album ${albumId}`);

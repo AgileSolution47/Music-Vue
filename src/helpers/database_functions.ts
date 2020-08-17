@@ -319,25 +319,24 @@ class DatabaseFunctions {
     return `cst.${num}`;
   }
 
-  // async cleanup() {
-  //   await this.isReady();
+  async cleanup() {
+    await this.isReady();
 
-  //   const data = await this._db.rawQuery(
-  //       "SELECT COUNT(*) as cnt, albumId as id FROM ${Tables.Songs} GROUP BY albumId;");
-  //   const batch = this._db.batch();
+    const data = await this._db.all<{ cnt: number; id: string }[]>(
+      `SELECT COUNT(*) as cnt, albumId as id FROM ${Tables.Songs} GROUP BY albumId;`
+    );
 
-  //   // Update numSongs to be correct
-  //   data.forEach((element) {
-  //     batch.update(Tables.Albums, {"numSongs": element["cnt"]},
-  //         where: "id LIKE ?", whereArgs: [element["id"]]);
-  //   });
+    // Update numSongs to be correct
+    Promise.all(
+      data.map(async element => {
+        await this.update(Tables.Albums, { numSongs: element.cnt }, 'id LIKE ?', [element.id]);
+      })
+    );
 
-  //   const albumIds = stringifyArr(data.map((e) => e["id"]).toList());
+    const albumIds = stringifyArr(data.map(e => e.id));
 
-  //   // Delete albums which do not appear in songdata
-  //   batch.delete(Tables.Albums, where: "id NOT IN ($albumIds)");
-
-  //   await batch.commit();
-  // }
+    // Delete albums which do not appear in songdata
+    await this.delete(Tables.Albums, `id NOT IN (${albumIds})`);
+  }
 }
 export default DatabaseFunctions;

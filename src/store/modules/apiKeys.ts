@@ -12,10 +12,10 @@ const state: ApiKeysState = {
 const mutations: MutationTree<ApiKeysState> = {
   setKeys(state, keys: ApiKeysState) {
     keys = {
-      ...keys,
       firestoreApiKey: null,
       firestoreProjectId: null,
       firestoreAppId: null,
+      ...keys,
     };
 
     state.napster = keys.napster;

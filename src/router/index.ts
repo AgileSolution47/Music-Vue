@@ -11,6 +11,7 @@ import MusicPage from '@/components/MusicPage.vue';
 import RegisterApiKeysPage from '@/components/RegisterApiKeysPage.vue';
 import SearchPage from '@/components/SearchPage.vue';
 import SettingsPage from '@/components/SettingsPage.vue';
+import SyncStatusPage from '@/components/SyncStatusPage.vue';
 
 Vue.use(Router);
 
@@ -99,6 +100,11 @@ export default new Router({
       path: '/settings',
       name: 'Settings',
       component: SettingsPage,
+    },
+    {
+      path: '/sync-status',
+      name: 'Sync Status',
+      component: SyncStatusPage,
     },
     {
       path: '*',

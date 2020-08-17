@@ -132,7 +132,7 @@ export default Vue.extend<CData, {}, CComputed>({
       apiKeysValid: 'valid',
     }),
     disabled() {
-      return !this.apiKeysValid;
+      return !this.apiKeysValid || this.$route.path === '/sync-status';
     },
   },
   components: {

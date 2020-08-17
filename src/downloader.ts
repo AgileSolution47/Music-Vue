@@ -31,7 +31,7 @@ export const downloadImage = async (id: string) => {
   }
 };
 
-type ProgressHandler = (progress: DownloadProgress) => void;
+type ProgressHandler = (progress: DownloadProgress, channel: string) => void;
 
 interface YtData {
   title: string;
@@ -112,7 +112,7 @@ export class YtDownloader {
     }));
   }
 
-  async downloadWithData(ytData: YtData[], albumId: string, path: string, notifyProgress = true) {
+  async downloadWithData(ytData: YtData[], albumId: string, path: string, channel: string) {
     let url: string | undefined;
 
     let i = 0;
@@ -137,30 +137,33 @@ export class YtDownloader {
           .on('end', res)
           .on('error', rej)
           .on('progress', progress => {
-            if (notifyProgress && this._progressHandler) {
+            if (channel && this._progressHandler) {
               const timestamp = this._parseDur(progress.timemark);
 
-              this._progressHandler({
-                timestamp,
-                total: data.duration,
-                percent: timestamp / data.duration,
-                albumId,
-                title: data.title,
-                artist: data.artist,
-              });
+              this._progressHandler(
+                {
+                  timestamp,
+                  total: data.duration,
+                  percent: timestamp / data.duration,
+                  albumId,
+                  title: data.title,
+                  artist: data.artist,
+                },
+                channel
+              );
             }
           });
       }),
     };
   }
 
-  async download(title: string, artist: string, albumId: string, notifyProgress = true) {
+  async download(title: string, artist: string, albumId: string, channel: string) {
     const ytData = await this.getYoutubeData(title, artist);
     return this.downloadWithData(
       ytData,
       albumId,
       path.join(this.basePath, `${title}.mp3`),
-      notifyProgress
+      channel
     );
   }
 }

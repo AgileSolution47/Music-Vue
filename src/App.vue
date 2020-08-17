@@ -2,7 +2,7 @@
   <div id="app">
     <main>
       <side-bar />
-      <header v-if="apiKeysValid" :style="{ opacity: headerOpacity }">
+      <header v-if="showBar" :style="{ opacity: headerOpacity }">
         <div></div>
         <div :style="{ opacity: titleOpacity }">
           <h3>{{ pageTitle }}</h3>
@@ -24,16 +24,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { debounce } from 'lodash';
 import { mapState, mapGetters } from 'vuex';
 import { Route } from 'vue-router';
 import { remote } from 'electron';
+import { debounce } from 'lodash';
 
 import SideBar from './components/SideBar.vue';
 import PlayerBar from './components/PlayerBar.vue';
 import SearchBar from './components/shared/SearchBar.vue';
 
-const paths: obj = {
+const paths: { [key: string]: number[] } = {
   '/': [0, 0, 0],
   '/home': [0, 1, 0],
   '/music': [0, 2, 0],
@@ -45,6 +45,7 @@ const paths: obj = {
   '/settings': [0, 5, 0],
   '/search': [1, 0, 0],
   '/register-keys': [2, 0, 0],
+  '/sync-status': [2, 0, 1],
 };
 
 interface CData {
@@ -62,8 +63,10 @@ interface CMethods {
 
 interface CComputed {
   apiKeysValid: boolean;
+  syncable: boolean;
   pageTitle: string;
   animations: boolean;
+  showBar: boolean;
 }
 
 export default Vue.extend<CData, CMethods, CComputed>({
@@ -75,7 +78,6 @@ export default Vue.extend<CData, CMethods, CComputed>({
   }),
   mounted() {
     this.$store.dispatch('settings/load');
-    window.store = this.$store;
     // eslint-disable-next-line no-unused-expressions
     document.getElementById('scroll-el')?.addEventListener('scroll', this.onScroll);
     window.onkeydown = (e: KeyboardEvent) => {
@@ -86,6 +88,9 @@ export default Vue.extend<CData, CMethods, CComputed>({
     };
     if (!this.apiKeysValid && this.$route.path !== '/register-keys') {
       this.$router.push('/register-keys');
+    } else if (this.syncable && this.$route.path !== '/sync-status') {
+      this.$store.dispatch('sync/connect');
+      this.$router.push('/sync-status');
     }
   },
   methods: {
@@ -126,10 +131,14 @@ export default Vue.extend<CData, CMethods, CComputed>({
   computed: {
     ...mapGetters('apiKeys', {
       apiKeysValid: 'valid',
+      syncable: 'syncable',
     }),
     ...mapState('settings', ['animations']),
     pageTitle() {
       return (this.$route.name?.charAt(0) === '\\' ? '' : this.$route.name) ?? '';
+    },
+    showBar() {
+      return this.apiKeysValid && this.$route.path !== '/sync-status';
     },
   },
   components: {

@@ -144,17 +144,19 @@ export default Vue.extend<CData, CMethods, CComputed>({
           this.firestoreApiKey.trim().length > 0
         ) {
           this.$store.commit('apiKeys/setKeys', {
-            firestoreProjectId: this.firestoreApiKey.trim(),
+            firestoreProjectId: this.firestoreProjectId.trim(),
             firestoreAppId: this.firestoreAppId.trim(),
             firestoreApiKey: this.firestoreApiKey.trim(),
             napster: this.napsterApiKey.trim(),
           });
+          this.$router.replace('/sync-status');
+          this.$store.dispatch('sync/connect');
         } else {
           this.$store.commit('apiKeys/setKeys', {
             napster: this.napsterApiKey.trim(),
           });
+          this.$router.back();
         }
-        this.$router.go(-1);
       }
     },
   },

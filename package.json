@@ -15,6 +15,7 @@
     "@types/node": "12",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "firebase": "^7.17.2",
     "fluent-ffmpeg": "^2.1.2",
     "lodash": "^4.17.19",
     "sqlite": "^4.0.12",
