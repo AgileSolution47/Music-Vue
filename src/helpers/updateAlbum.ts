@@ -2,6 +2,8 @@ import { remote } from 'electron';
 import path from 'path';
 import axios from 'axios';
 
+import { SyncTables } from '@/helpers/firestore_sync';
+
 const { app } = remote;
 
 const getAlbumInfo = async (
@@ -44,6 +46,10 @@ const updateAlbum = async (albumId: string, napsterKey: string) => {
       id: albumId,
       numSongs,
     });
+    window.syncDB?.update(SyncTables.Albums, albumId, {
+      id: albumId,
+      numSongs,
+    });
 
     return;
   }
@@ -65,6 +71,7 @@ const updateAlbum = async (albumId: string, napsterKey: string) => {
   };
 
   window.db.insertAlbum(album);
+  window.syncDB?.insertAlbum(album);
 };
 
 export default updateAlbum;

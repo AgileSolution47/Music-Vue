@@ -30,7 +30,7 @@ const cleanSong = (map: FirestoreSongData) => ({
   thumbnail: `file://${path.join(app.getPath('userData'), 'album_images', `${map.albumId}.jpg`)}`,
 });
 
-enum SyncTables {
+export enum SyncTables {
   Songs = 'songs',
   Albums = 'albums',
   CustomAlbums = 'customalbums',

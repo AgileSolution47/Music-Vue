@@ -8,6 +8,7 @@ import updateAlbum from '@/helpers/updateAlbum';
 import { Tables } from '@/helpers/database_functions';
 
 import { RootState } from './types';
+import { SyncTables } from '@/helpers/firestore_sync';
 
 const { app } = remote;
 
@@ -74,6 +75,7 @@ const actions: ActionTree<RootState, RootState> = {
 
       await updateAlbum(song.albumId, rootState.apiKeys.napster ?? '');
       await window.db.insertSong(song);
+      window.syncDB?.insertSong(song, youtubeId);
 
       new Notification(song.title, {
         body: `Finished Downloading ${song.title} by ${song.artist}.\n It is stored in ${rootState.settings.folderStored}`,
@@ -104,6 +106,7 @@ const actions: ActionTree<RootState, RootState> = {
       window.db.deleteSong(song.title),
       window.db.update(Tables.Albums, data, 'id LIKE ?', [song.albumId]),
     ]);
+    window.syncDB?.update(SyncTables.Albums, song.albumId, data);
 
     await window.db.deleteEmptyAlbums();
 
@@ -117,6 +120,7 @@ const actions: ActionTree<RootState, RootState> = {
       'title LIKE ?',
       [song.title]
     );
+    window.syncDB?.update(SyncTables.Songs, song.title, { liked: !song.liked });
 
     commit('queue/toggleLiked', song);
     commit('update', undefined, { root: true });
@@ -129,11 +133,13 @@ const actions: ActionTree<RootState, RootState> = {
     };
 
     await window.db.insertCustomAlbum(album);
+    window.syncDB?.insertCustomAlbum(album);
 
     commit('update');
   },
   async editCustomAlbum({ commit }, album: CustomAlbumData) {
     await window.db.updateCustomAlbum(album);
+    window.syncDB?.update(SyncTables.CustomAlbums, album.id, album);
     commit('update');
   },
   async addSongToAlbum({ commit }, { album, song }: AddSongToAlbumPayload) {
@@ -142,6 +148,7 @@ const actions: ActionTree<RootState, RootState> = {
     album.songs.push(song.title);
 
     await window.db.updateCustomAlbum(album);
+    window.syncDB?.update(SyncTables.CustomAlbums, album.id, album);
     commit('update');
   },
   async deleteCustomAlbum({ commit }, id: string) {
