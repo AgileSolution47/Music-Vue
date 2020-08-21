@@ -29,7 +29,7 @@ import { Route } from 'vue-router';
 import { remote } from 'electron';
 import { debounce } from 'lodash';
 
-import { checkMusicDir, addSongRange, delSongRange } from './helpers/checks';
+import performChecks from './helpers/checks';
 import SideBar from './components/SideBar.vue';
 import PlayerBar from './components/PlayerBar.vue';
 import SearchBar from './components/shared/SearchBar.vue';
@@ -95,16 +95,10 @@ export default Vue.extend<CData, CMethods, CComputed>({
       await dispatch;
     }
 
-    const { folderStored } = this.$store.state.settings;
-    const { toAdd, toDel } = await checkMusicDir(folderStored);
-
-    await addSongRange(toAdd, {
+    await performChecks({
       napsterKey: this.$store.state.apiKeys.napster,
-      folderStored,
+      folderStored: this.$store.state.settings.folderStored,
     });
-    await delSongRange(toDel);
-
-    window.db.cleanup();
   },
   methods: {
     onScroll(event) {

@@ -126,3 +126,14 @@ export const checkMusicDir = async (folderStored: string) => {
 
   return { toAdd, toDel };
 };
+
+const performChecks = async (config: Config) => {
+  const { toAdd, toDel } = await checkMusicDir(config.folderStored);
+
+  await addSongRange(toAdd, config);
+  await delSongRange(toDel);
+
+  window.db.cleanup();
+};
+
+export default performChecks;

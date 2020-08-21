@@ -102,8 +102,7 @@ export default Vue.extend<{}, CMethods, SettingsState>({
       });
 
       if (!canceled && prevPath !== filePaths[0]) {
-        ipcRenderer.emit('download:update-base-path', filePaths[0]);
-        this.$store.commit('settings/setFolderStored', filePaths[0]);
+        this.$store.dispatch('settings/setFolderStored', filePaths[0]);
       }
     },
   },
