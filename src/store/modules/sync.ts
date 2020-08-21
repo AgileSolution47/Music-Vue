@@ -32,7 +32,7 @@ const actions: ActionTree<SyncState, RootState> = {
     window.syncDB.onUpdate = () => commit('update', undefined, { root: true });
     window.syncDB.onStatusUpdate = status => commit('setStatus', status);
 
-    window.syncDB.init();
+    return window.syncDB.init();
   },
 };
 

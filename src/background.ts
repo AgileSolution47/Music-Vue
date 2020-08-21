@@ -15,8 +15,6 @@ const resources = process.env.WEBPACK_DEV_SERVER_URL
   ? path.join(app.getAppPath(), '../public')
   : __dirname;
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null = null;
 let help: BrowserWindow | null = null;
 let remote: BrowserWindow | null = null;

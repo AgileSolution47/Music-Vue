@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { ipcRenderer, remote } from 'electron';
 import { ActionTree, MutationTree } from 'vuex';
 import path from 'path';
@@ -6,9 +7,9 @@ import { promises as fs } from 'fs';
 import logo from '@/assets/logo.png';
 import updateAlbum from '@/helpers/updateAlbum';
 import { Tables } from '@/helpers/database_functions';
+import { SyncTables } from '@/helpers/firestore_sync';
 
 import { RootState } from './types';
-import { SyncTables } from '@/helpers/firestore_sync';
 
 const { app } = remote;
 

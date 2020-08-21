@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { remote } from 'electron';
 import path from 'path';
 import axios from 'axios';

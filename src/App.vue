@@ -29,6 +29,7 @@ import { Route } from 'vue-router';
 import { remote } from 'electron';
 import { debounce } from 'lodash';
 
+import { checkMusicDir, addSongRange, delSongRange } from './helpers/checks';
 import SideBar from './components/SideBar.vue';
 import PlayerBar from './components/PlayerBar.vue';
 import SearchBar from './components/shared/SearchBar.vue';
@@ -76,7 +77,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     titleOpacity: 0,
     headerOpacity: 1,
   }),
-  mounted() {
+  async mounted() {
     this.$store.dispatch('settings/load');
     // eslint-disable-next-line no-unused-expressions
     document.getElementById('scroll-el')?.addEventListener('scroll', this.onScroll);
@@ -89,9 +90,21 @@ export default Vue.extend<CData, CMethods, CComputed>({
     if (!this.apiKeysValid && this.$route.path !== '/register-keys') {
       this.$router.push('/register-keys');
     } else if (this.syncable && this.$route.path !== '/sync-status') {
-      this.$store.dispatch('sync/connect');
+      const dispatch = this.$store.dispatch('sync/connect');
       this.$router.push('/sync-status');
+      await dispatch;
     }
+
+    const { folderStored } = this.$store.state.settings;
+    const { toAdd, toDel } = await checkMusicDir(folderStored);
+
+    await addSongRange(toAdd, {
+      napsterKey: this.$store.state.apiKeys.napster,
+      folderStored,
+    });
+    await delSongRange(toDel);
+
+    window.db.cleanup();
   },
   methods: {
     onScroll(event) {

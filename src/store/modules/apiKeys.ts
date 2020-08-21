@@ -31,6 +31,7 @@ const getters: GetterTree<ApiKeysState, RootState> = {
   },
   syncable(state) {
     return (
+      false && // TODO remove
       state.firestoreApiKey !== null &&
       state.firestoreProjectId !== null &&
       state.firestoreAppId !== null
