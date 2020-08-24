@@ -161,8 +161,10 @@ export default Vue.extend<CData, CMethods, CComputed>({
       if (to.name === 'Download') this.$store.commit('searchResults/clear');
       setTimeout(() => {
         const [prevScreen, nextScreen] = document.querySelectorAll('#scroll-el');
-        prevScreen.removeEventListener('scroll', this.onScroll);
-        nextScreen.addEventListener('scroll', this.onScroll);
+        // eslint-disable-next-line no-unused-expressions
+        prevScreen?.removeEventListener('scroll', this.onScroll);
+        // eslint-disable-next-line no-unused-expressions
+        nextScreen?.addEventListener('scroll', this.onScroll);
       }, 100);
     },
   },

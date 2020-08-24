@@ -100,6 +100,9 @@ const actions: ActionTree<RootState, RootState> = {
     }
   },
   async deleteSong({ commit }, song: SongData) {
+    // eslint-disable-next-line no-alert
+    if (!window.confirm(`Are you sure you want to delete ${song.title} by ${song.artist}`)) return;
+
     const data = { numSongs: (await window.db.getNumSongs(song.albumId)) - 1 };
 
     await Promise.all([

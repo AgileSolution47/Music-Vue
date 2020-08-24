@@ -43,6 +43,10 @@ const mutations: MutationTree<QueueState> = {
     if (!state.loop) {
       state.index = (state.index + 1) % state.queue.length;
     }
+
+    window.db.incrementNumListens(state.queue[state.index]);
+    // eslint-disable-next-line no-unused-expressions
+    window.syncDB?.incrementNumListens(state.queue[state.index]);
   },
   prevSong(state) {
     if (!state.loop) {

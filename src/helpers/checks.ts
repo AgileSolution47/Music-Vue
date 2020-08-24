@@ -35,7 +35,9 @@ const getSongDetails = async (title: string, config: Config): Promise<SongData |
       albumId: track.albumId,
       artist: track.artistName,
       title: track.name,
-      length: (await mm.parseFile(filePath)).format.duration ?? track.playbackSeconds,
+      length: Math.round(
+        (await mm.parseFile(filePath)).format.duration ?? (track.playbackSeconds as number)
+      ),
       thumbnail: `file://${path.join(
         app.getPath('userData'),
         'album_images',
@@ -75,7 +77,6 @@ export const addSongRange = async (songTitles: string[], config: Config) => {
   if (unavailable.length) console.error(unavailable.length, 'songs unavailable: ', { unavailable });
 
   for (const song of songs) {
-    console.log(song);
     await ipcRenderer.invoke('download:image', song.albumId);
 
     await updateAlbum(song.albumId, config.napsterKey);
@@ -94,13 +95,11 @@ export const delSongRange = async (songsTitles: string[]) => {
 export const checkMusicDir = async (folderStored: string) => {
   const songsDb = (await window.db.getSongs()).map(s => s.title);
   const songsLs = (await fs.readdir(folderStored))
-    .filter(name => path.extname(name) === 'mp3')
+    .filter(name => path.extname(name) === '.mp3')
     .map(name => name.slice(0, name.length - 4));
 
   songsDb.sort();
   songsLs.sort();
-
-  console.log(songsDb, songsLs);
 
   const toAdd: string[] = [];
   const toDel: string[] = [];

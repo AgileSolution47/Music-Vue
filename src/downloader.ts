@@ -80,6 +80,7 @@ export class YtDownloader {
   async _getAudioUrl(videoId: string) {
     const info = await ytdl.getInfo(videoId, {
       quality: 'highestaudio',
+      // typescript thinks there are missing properties on the object, but they are optional
       // @ts-ignore
       format: {
         hasAudio: true,

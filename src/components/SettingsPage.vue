@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapState, mapMutations, mapActions } from 'vuex';
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import path from 'path';
 
 import { SettingsState } from '@/store/types';

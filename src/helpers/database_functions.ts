@@ -18,6 +18,8 @@ export const parseArr = (arr: string) => JSON.parse(`[${arr}]`);
 type Count = { cnt: number };
 
 class DatabaseFunctions {
+  // _db is not initialised in the contructor, but in _init()
+  // which is called within the contructor
   // @ts-ignore
   private _db: Database<sqlite3.Database, sqlite3.Statement>;
 
@@ -339,4 +341,5 @@ class DatabaseFunctions {
     await this.delete(Tables.Albums, `id NOT IN (${albumIds})`);
   }
 }
+
 export default DatabaseFunctions;
