@@ -48,7 +48,6 @@ class FirestoreSync {
   private _numFailed = 0;
 
   constructor(keys: FirestoreKeys) {
-    console.log(`projectId: '${keys.projectId}'`);
     this.app = firebase.initializeApp({
       appId: keys.appId,
       apiKey: keys.apiKey,
@@ -241,15 +240,14 @@ class FirestoreSync {
 
       return true;
     } catch (e) {
-      console.log(`Failed $title; id: ${firestoreSong.youtubeId}`);
+      console.log(`Failed ${firestoreSong.title}; id: ${firestoreSong.youtubeId}`);
       console.log(e);
       this._numFailed++;
       return false;
     }
   }
 
-  private async _deleteSong(title: string) {
-    const path = '';
+  private async _deleteSong(title: string, path: string) {
     await Promise.all([
       window.db.deleteSong(title),
       promisify(exists)(path).then(exists => (exists ? fs.unlink(path) : Promise.resolve())),
@@ -276,7 +274,7 @@ class FirestoreSync {
     }
     for (const idx of toDelete) {
       this._dispatch(new _.SyncSongsName(dbSongs[idx].title, true, this._numFailed));
-      await this._deleteSong(dbSongs[idx].title);
+      await this._deleteSong(dbSongs[idx].title, dbSongs[idx].filePath);
     }
     for (const idx of toUpdate) {
       const song = firestoreSongs[idx];
@@ -309,7 +307,10 @@ class FirestoreSync {
             await window.db.updateSong(cleanSong(change.doc.data() as FirestoreSongData));
             break;
           case 'removed':
-            await this._deleteSong(change.doc.id);
+            await this._deleteSong(
+              change.doc.id,
+              path.join(await ipcRenderer.invoke('get:music-dir'), `${change.doc.id}.mp3`)
+            );
             break;
           default:
             break;
@@ -322,7 +323,6 @@ class FirestoreSync {
 
   private async _addAlbum(firestoreAlbum: FirestoreAlbumData) {
     const album = translator.albumFromFirestore(firestoreAlbum);
-    console.log(album);
 
     console.log(`Adding album ${album.name}`);
 

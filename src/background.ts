@@ -178,6 +178,8 @@ if (isDevelopment) {
   }
 }
 
+ipcMain.handle('get:music-dir', () => downloader.basePath);
+
 ipcMain.handle('download:image', (_, albumId: string) => downloadImage(albumId));
 
 ipcMain.handle('download:song', async (_, song: NapsterSongData) => {
