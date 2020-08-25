@@ -32,7 +32,7 @@ import { debounce } from 'lodash';
 import performChecks from './helpers/checks';
 import SideBar from './components/SideBar.vue';
 import PlayerBar from './components/PlayerBar.vue';
-import SearchBar from './components/shared/SearchBar.vue';
+import SearchBar from './components/SearchBar.vue';
 
 const paths: { [key: string]: number[] } = {
   '/': [0, 0, 0],

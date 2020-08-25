@@ -42,10 +42,9 @@ import { remote } from 'electron';
 import path from 'path';
 
 import { SettingsState } from '@/store/types';
-
-import ToggleButton from './SettingsPage/ToggleButton.vue';
-import NumberSelection from './SettingsPage/NumberSelection.vue';
-import SettingItem from './SettingsPage/SettingItem.vue';
+import ToggleButton from '@/components/ToggleButton.vue';
+import NumberSelection from '@/components/NumberSelection.vue';
+import SettingItem from '@/components/SettingItem.vue';
 
 interface CMethods {
   toggleAnimations: () => void;

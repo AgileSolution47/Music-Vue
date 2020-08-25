@@ -113,8 +113,8 @@ import HeartOutlineIcon from 'vue-material-design-icons/HeartOutline.vue';
 
 import formatLength from '@/helpers/formatLength';
 
-import PlayPause from './shared/PlayPause.vue';
-import AddSongToAlbum from './shared/AddSongToAlbum.vue';
+import PlayPause from './PlayPause.vue';
+import AddSongToAlbum from './AddSongToAlbum.vue';
 
 interface CData {
   playing: boolean;

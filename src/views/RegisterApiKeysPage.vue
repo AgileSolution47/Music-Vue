@@ -61,7 +61,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import CheckIcon from 'vue-material-design-icons/Check.vue';
 
-import MaterialLoader from './shared/MaterialLoader.vue';
+import MaterialLoader from '@/components/MaterialLoader.vue';
 
 interface CData {
   state: number;

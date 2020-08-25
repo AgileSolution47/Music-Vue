@@ -23,8 +23,7 @@ import Vue from 'vue';
 import { mapState } from 'vuex';
 
 import * as _ from '@/helpers/firestore_sync/sync_status';
-
-import LinearProgressBar from './shared/LinearProgressBar.vue';
+import LinearProgressBar from '@/components/LinearProgressBar.vue';
 
 interface CComputed {
   status: _.SyncStatus;

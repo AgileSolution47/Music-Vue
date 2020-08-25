@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import AlbumPage from '@/components/AlbumPage.vue';
-import AlbumsPage from '@/components/AlbumsPage.vue';
-import ArtistPage from '@/components/ArtistPage.vue';
-import ArtistsPage from '@/components/ArtistsPage.vue';
-import HomePage from '@/components/HomePage.vue';
-import LikedPage from '@/components/LikedPage.vue';
-import MusicPage from '@/components/MusicPage.vue';
-import RegisterApiKeysPage from '@/components/RegisterApiKeysPage.vue';
-import SearchPage from '@/components/SearchPage.vue';
-import SettingsPage from '@/components/SettingsPage.vue';
-import SyncStatusPage from '@/components/SyncStatusPage.vue';
+import AlbumPage from '@/views/AlbumPage.vue';
+import AlbumsPage from '@/views/AlbumsPage.vue';
+import ArtistPage from '@/views/ArtistPage.vue';
+import ArtistsPage from '@/views/ArtistsPage.vue';
+import HomePage from '@/views/HomePage.vue';
+import LikedPage from '@/views/LikedPage.vue';
+import MusicPage from '@/views/MusicPage.vue';
+import RegisterApiKeysPage from '@/views/RegisterApiKeysPage.vue';
+import SearchPage from '@/views/SearchPage.vue';
+import SettingsPage from '@/views/SettingsPage.vue';
+import SyncStatusPage from '@/views/SyncStatusPage.vue';
 
 Vue.use(Router);
 

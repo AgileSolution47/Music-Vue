@@ -14,12 +14,11 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import musicSymbol from '@/assets/music_symbol.png';
 import generateSubtitle from '@/helpers/generateSubtitle';
 import { stringifyArr } from '@/helpers/database_functions';
-
-import SongPage from './shared/SongPage.vue';
-import EditCustomAlbum from './shared/EditCustomAlbum.vue';
+import musicSymbol from '@/assets/music_symbol.png';
+import SongPage from '@/components/SongPage.vue';
+import EditCustomAlbum from '@/components/EditCustomAlbum.vue';
 
 interface CData {
   songs: SongData[];

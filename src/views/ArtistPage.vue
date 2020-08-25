@@ -6,8 +6,7 @@
 import Vue from 'vue';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
-
-import SongPage from './shared/SongPage.vue';
+import SongPage from '@/components/SongPage.vue';
 
 interface CData {
   songs: SongData[];

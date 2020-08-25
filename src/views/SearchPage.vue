@@ -41,8 +41,8 @@ import { ipcRenderer } from 'electron';
 import AlertCircleIcon from 'vue-material-design-icons/AlertCircle.vue';
 import CheckIcon from 'vue-material-design-icons/Check.vue';
 
-import SongItem from './shared/SongItem.vue';
-import LoadingIcon from './shared/LoadingIcon.vue';
+import SongItem from '@/components/SongItem.vue';
+import LoadingIcon from '@/components/LoadingIcon.vue';
 
 interface Progress {
   text: string;

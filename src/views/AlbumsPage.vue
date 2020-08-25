@@ -58,10 +58,9 @@ import generateSubtitle from '@/helpers/generateSubtitle';
 import { stringifyArr } from '@/helpers/database_functions';
 import musicSymbol from '@/assets/music_symbol.png';
 import likedImage from '@/assets/liked.png';
-
-import CoverImage from './shared/CoverImage.vue';
-import ContextMenu from './shared/ContextMenu.vue';
-import AddCustomAlbum from './shared/AddCustomAlbum.vue';
+import CoverImage from '@/components/CoverImage.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
+import AddCustomAlbum from '@/components/AddCustomAlbum.vue';
 
 interface CData {
   musicSymbol: string;

@@ -54,10 +54,9 @@ import { mapMutations } from 'vuex';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
 import { displace } from '@/helpers/displace';
-
-import CoverImage from './shared/CoverImage.vue';
-import ContextMenu from './shared/ContextMenu.vue';
-import AddSongToAlbum from './shared/AddSongToAlbum.vue';
+import CoverImage from '@/components/CoverImage.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
+import AddSongToAlbum from '@/components/AddSongToAlbum.vue';
 
 interface CData {
   topSongs: SongData[] | null;

@@ -28,9 +28,8 @@
 import Vue from 'vue';
 
 import generateSubtitle from '@/helpers/generateSubtitle';
-
-import CoverImage from './shared/CoverImage.vue';
-import ContextMenu from './shared/ContextMenu.vue';
+import CoverImage from '@/components/CoverImage.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
 
 interface CData {
   artists: ArtistData[];

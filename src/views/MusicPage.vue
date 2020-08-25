@@ -46,11 +46,10 @@ import { mapMutations } from 'vuex';
 import DotsHorizontalIcon from 'vue-material-design-icons/DotsHorizontal.vue';
 
 import { displace } from '@/helpers/displace';
-
-import SongItem from './shared/SongItem.vue';
-import SearchBar from './shared/SearchBar.vue';
-import ContextMenu from './shared/ContextMenu.vue';
-import AddSongToAlbum from './shared/AddSongToAlbum.vue';
+import SongItem from '@/components/SongItem.vue';
+import SearchBar from '@/components/SearchBar.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
+import AddSongToAlbum from '@/components/AddSongToAlbum.vue';
 
 interface CData {
   allSongs: SongData[] | null;
