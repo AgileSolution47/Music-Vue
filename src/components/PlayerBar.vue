@@ -205,7 +205,6 @@ export default Vue.extend<CData, CMethods, CComputed>({
       ipcRenderer.on('next-track', () => this.nextSong());
       ipcRenderer.on('stop-track', () => this.dequeue());
       ipcRenderer.on('pause-play', () => {
-        if (document.activeElement?.tagName === 'INPUT') return;
         this.togglePlay();
       });
     },

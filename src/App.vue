@@ -82,7 +82,7 @@ export default Vue.extend<CData, CMethods, CComputed>({
     // eslint-disable-next-line no-unused-expressions
     document.getElementById('scroll-el')?.addEventListener('scroll', this.onScroll);
     window.onkeydown = (e: KeyboardEvent) => {
-      if (e.keyCode === 32) {
+      if (e.keyCode === 32 && document.activeElement?.tagName !== 'INPUT') {
         e.preventDefault();
         remote.getCurrentWebContents().send('pause-play');
       }
