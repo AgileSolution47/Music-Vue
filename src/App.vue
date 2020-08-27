@@ -44,6 +44,7 @@ const paths: { [key: string]: number[] } = {
   '/artists/artist': [0, 4, 1],
   '/artists': [0, 4, 0],
   '/settings': [0, 5, 0],
+  '/queue': [0, 6, 0],
   '/search': [1, 0, 0],
   '/register-keys': [2, 0, 0],
   '/sync-status': [2, 0, 1],

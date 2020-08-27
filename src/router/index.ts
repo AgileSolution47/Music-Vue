@@ -8,6 +8,7 @@ import ArtistsPage from '@/views/ArtistsPage.vue';
 import HomePage from '@/views/HomePage.vue';
 import LikedPage from '@/views/LikedPage.vue';
 import MusicPage from '@/views/MusicPage.vue';
+import QueuePage from '@/views/QueuePage.vue';
 import RegisterApiKeysPage from '@/views/RegisterApiKeysPage.vue';
 import SearchPage from '@/views/SearchPage.vue';
 import SettingsPage from '@/views/SettingsPage.vue';
@@ -15,6 +16,9 @@ import SyncStatusPage from '@/views/SyncStatusPage.vue';
 
 Vue.use(Router);
 
+// The route names are what is shown when the user scrolls down some amount,
+// but some pages dont require for the name to come when scrolling, those route names
+// are prefixed with a `\` (double in the code for escaping)
 export default new Router({
   routes: [
     {
@@ -85,6 +89,11 @@ export default new Router({
       path: '/music',
       name: 'My Music',
       component: MusicPage,
+    },
+    {
+      path: '/queue',
+      name: '\\queue-page',
+      component: QueuePage,
     },
     {
       path: '/register-keys',

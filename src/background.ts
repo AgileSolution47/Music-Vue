@@ -78,6 +78,7 @@ ipcMain.on('main-song-update', (evt, song: SongData) => {
 
 ipcMain.on('main-play-pause', (evt, isPaused) => {
   remote?.webContents.send('song-pause-play', isPaused);
+  win?.webContents.send('song-pause-play', isPaused);
 });
 
 ipcMain.on('remote-prev', () => {
