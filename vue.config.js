@@ -14,9 +14,9 @@ module.exports = {
         productName: 'Music',
         appId: 'com.LutetiumVanadium.Music',
         directories: {
-          output: 'build',
+          output: 'release',
+          buildResources: 'public',
         },
-        files: ['dist/electron/**/*'],
         dmg: {
           contents: [
             {
@@ -33,13 +33,16 @@ module.exports = {
           ],
         },
         mac: {
-          icon: 'build/icons/icon.icns',
+          icon: 'icons/icon.icns',
         },
         win: {
-          icon: 'build/icons/icon.ico',
+          icon: 'icons/icon.ico',
+          target: ['nsis', 'msi'],
         },
         linux: {
-          icon: 'build/icons',
+          icon: 'icons/linux',
+          target: ['pacman', 'AppImage'],
+          category: 'AudioVideo',
         },
       },
     },

@@ -23,8 +23,8 @@ let downloader: YtDownloader;
 const toggleHelp = () => {
   if (help === null) {
     help = new BrowserWindow({
-      width: 1000,
-      height: 800,
+      width: 1220,
+      height: 830,
       icon: path.join(resources, 'logo.png'),
     });
 

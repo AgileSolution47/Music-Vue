@@ -1,7 +1,13 @@
 {
   "name": "music-vue",
+  "description": "A Music App in Electron and Vue",
   "version": "0.0.1",
   "private": true,
+  "author": {
+    "name": "Lutetium-Vanadium",
+    "email": "52347010+Lutetium-Vanadium@users.noreply.github.com"
+  },
+  "main": "background.js",
   "scripts": {
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service electron:serve",
@@ -9,7 +15,6 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
   "dependencies": {
     "@types/fluent-ffmpeg": "^2.1.14",
     "@types/node": "12",

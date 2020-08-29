@@ -4,6 +4,8 @@ const createMenu = (win: BrowserWindow, dev: boolean, toggleHelp: () => void) =>
   const isMac = process.platform === 'darwin';
 
   const viewSubmenu: MenuItemConstructorOptions[] = [
+    { role: 'toggleDevTools' },
+    { type: 'separator' },
     { role: 'resetZoom' },
     { role: 'zoomIn' },
     { role: 'zoomOut' },
@@ -12,12 +14,7 @@ const createMenu = (win: BrowserWindow, dev: boolean, toggleHelp: () => void) =>
   ];
 
   if (dev) {
-    viewSubmenu.unshift(
-      { role: 'reload' },
-      { role: 'forceReload' },
-      { role: 'toggleDevTools' },
-      { type: 'separator' }
-    );
+    viewSubmenu.unshift({ role: 'reload' }, { role: 'forceReload' });
   }
 
   const template: MenuItemConstructorOptions[] = [
@@ -31,7 +28,6 @@ const createMenu = (win: BrowserWindow, dev: boolean, toggleHelp: () => void) =>
         {
           label: 'Pause/Play',
           click: () => win.webContents.send('pause-play', false),
-          accelerator: 'Space',
         },
         {
           label: 'Previous Track',
