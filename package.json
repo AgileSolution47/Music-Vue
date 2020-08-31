@@ -1,6 +1,7 @@
 {
-  "name": "music-vue",
+  "name": "Music",
   "description": "A Music App in Electron and Vue",
+  "homepage": "https://github.com:Lutetium-Vanadium/Music-Vue",
   "version": "0.0.1",
   "private": true,
   "author": {

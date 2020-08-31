@@ -9,7 +9,7 @@
       </p>
       <a
         target="_blank"
-        href="https://github.com/Lutetium-Vanadium/Music-Flutter/blob/master/docs/apikeys.md#napster"
+        href="https://github.com/Lutetium-Vanadium/Music-Vue/blob/master/docs/apikeys.md#napster"
         class="learn-more"
       >
         Learn More
@@ -28,7 +28,7 @@
       </p>
       <a
         target="_blank"
-        href="https://github.com/Lutetium-Vanadium/Music-Flutter/blob/master/docs/apikeys.md#firebase-optional"
+        href="https://github.com/Lutetium-Vanadium/Music-Vue/blob/master/docs/apikeys.md#firebase-optional"
         class="learn-more"
       >
         Learn More
