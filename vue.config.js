@@ -37,11 +37,11 @@ module.exports = {
         },
         win: {
           icon: 'icons/icon.ico',
-          target: ['nsis', 'msi'],
+          target: ['nsis'],
         },
         linux: {
           icon: 'icons/linux',
-          target: ['pacman', 'AppImage'],
+          target: ['AppImage', 'tar.gz'],
           category: 'AudioVideo',
         },
       },
